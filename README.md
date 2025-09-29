@@ -1,6 +1,6 @@
 # FAST Cybersecurity Research Project
 
->Welcome to the Research Project's GitHub repo!
+**Welcome to the Research Project's GitHub repo!**
 ## First-time Setup Instructions
 Once you've been added to the organization you should be able to **clone/pull**
 
