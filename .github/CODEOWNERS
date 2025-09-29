@@ -1,2 +1,3 @@
-/app/frontend/  @FAST-Cyber-Security-Team/front-end-research-leads
-/app/backend/   @FAST-Cyber-Security-Team/back-end-research-leads
+.github/CODEOWNERS  @FAST-Cyber-Security-Team/admins
+/app/frontend/      @FAST-Cyber-Security-Team/front-end-research-leads
+/app/backend/       @FAST-Cyber-Security-Team/back-end-research-leads
