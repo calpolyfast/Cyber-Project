@@ -1,5 +1,5 @@
-/.github/CODEOWNERS @FAST-Cyber-Security-Team/admins
-/.gitignore         @FAST-Cyber-Security-Team/admins
-/README.md          @FAST-Cyber-Security-Team/admins
-/app/frontend/      @FAST-Cyber-Security-Team/front-end-research-leads
-/app/backend/       @FAST-Cyber-Security-Team/back-end-research-leads
+/.github/CODEOWNERS @Literally-Code
+/.gitignore         @Literally-Code
+/README.md          @Literally-Code
+/app/frontend/      @Literally-Code
+/app/backend/       @Literally-Code
