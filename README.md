@@ -1,4 +1,4 @@
-# FAST Cybersecurity Research Project
+# Theo changed the title of the research project
 
 **Welcome to the Research Project's GitHub repo!**
 ## First-time Setup Instructions
