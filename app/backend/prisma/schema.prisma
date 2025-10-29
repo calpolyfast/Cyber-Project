@@ -12,3 +12,16 @@ model User {
   name  String
   email String @unique
 }
+
+model VulnerabilityGroup{
+  id    Int @id @default(autoincrement())
+  name  String
+  vulnerabilities Vulnerability[]
+}
+
+model Vulnerability {
+  id                    Int @id @default(autoincrement())
+  description           String
+  vulnerabilityGroupId  Int
+  vulnerabilityGroup    VulnerabilityGroup  @relation(fields: [vulnerabilityGroupId], references: [id])
+}
