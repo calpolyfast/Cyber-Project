@@ -2,11 +2,11 @@ jest.mock("../src/config/db.js", () => ({
     __esModule: true,
     default: {
             users: {
-            findMany: jest.fn(),
-            findUnique: jest.fn(),
-            create: jest.fn(),
-            delete: jest.fn(),
-        }
+                findMany: jest.fn(),
+                findUnique: jest.fn(),
+                create: jest.fn(),
+                delete: jest.fn(),
+            }
     }
 }))
 
@@ -64,7 +64,7 @@ describe('Login Controller', () => {
         expect(res.status).toHaveBeenCalledWith(200)
         expect(res.json).toHaveBeenCalledWith({
             access_token: "mock_token",
-            expiresIn: 3600000,
+            expiresIn: 3600000, // 1 hour in milliseconds
         })
     })
 
@@ -122,6 +122,12 @@ describe('Login Controller', () => {
             "error": "Request has invalid credentials"
         })
     })
+})
+
+describe('Register Controller', () => {
+    beforeEach(() => {
+        jest.clearAllMocks()
+    })
 
     test("registerController creates new user and returns success message", async () => {
         const mockReqData = {
@@ -143,6 +149,7 @@ describe('Login Controller', () => {
 
         await registerController(req, res)
 
+        // Ensure password is hashed properly
         expect(bcrypt.hash).toHaveBeenCalledWith("new_password", 10)
 
         // Username and password will be only expected user fields for now
@@ -168,7 +175,7 @@ describe('Login Controller', () => {
             username: "existing_user",
             password: "hashed_password"
         }
-        const errorMessage = "User with username existing_user already exists. Please choose a different username."
+        const errorMessage = "User with username 'existing_user' already exists. Please choose a different username."
 
         // Mock prisma findUnique to retrieve identical user
         prisma.user.findUnique.mockResolvedValue(mockIdenticalUser)
