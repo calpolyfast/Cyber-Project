@@ -21,7 +21,8 @@ model VulnerabilityGroup{
 
 model Vulnerability {
   id                    Int @id @default(autoincrement())
+  name                  String
   description           String
-  vulnerabilityGroupId  Int
-  vulnerabilityGroup    VulnerabilityGroup  @relation(fields: [vulnerabilityGroupId], references: [id])
+  vulnerabilityGroupId  Int?
+  vulnerabilityGroup    VulnerabilityGroup?  @relation(fields: [vulnerabilityGroupId], references: [id])
 }

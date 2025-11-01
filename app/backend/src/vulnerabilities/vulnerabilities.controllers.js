@@ -13,26 +13,29 @@ export const getAllVulnerabilities = async (req, res) => {
 
 export const getVulnerabilityById = async (req, res) => {
     try {
-        const vuln = await prisma.vulnerability.findUnique({
-            where: { id: Number(req.params.id)}
-        })
+      const vuln = await prisma.vulnerability.findUnique({
+        include: { vulnerabilityGroup: true }, 
+        where: { id: Number(req.params.id)}
+      })
 
-        if(!vuln) {
-            return res.status(404).json({ error: 'Vulnerability not found' })
-        }
-        res.status(200).json(vuln)
+      if(!vuln) {
+        return res.status(404).json({ error: 'Vulnerability not found' })
+      }
+      res.status(200).json(vuln)
     }
     catch(err){
-        res.status(500).json({ error: err.message})
+      res.status(500).json({ error: err.message})
     }
 }
 
 export const createVulnerability = async (req, res) => {
   try {
-    const { description, vulnerabilityGroupId } = req.body;
+    const { name, description, vulnerabilityGroupId } = req.body;
+
     const vuln = await prisma.vulnerability.create({
-      data: { description, vulnerabilityGroupId: Number(vulnerabilityGroupId) },
+      data: { name, description, vulnerabilityGroupId: Number(vulnerabilityGroupId) },
     });
+
     res.status(201).json(vuln);
   } catch (err) {
     res.status(400).json({ error: err.message });
