@@ -1,12 +1,12 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import prisma from './config/db.js'
+import products from '../products/products.routes.js';
 
 dotenv.config()
 
 const app = express();
 const port = process.env.PORT || 3000;
-
 // It's that easy!
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -26,3 +26,5 @@ app.get('/db-test', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });
+
+app.use(products);

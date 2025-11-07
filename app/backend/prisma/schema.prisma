@@ -12,3 +12,11 @@ model User {
   name  String
   email String @unique
 }
+
+model Product {
+  id    Int 
+  price Double 
+  name  String
+  sale? boolean default(true)
+
+}

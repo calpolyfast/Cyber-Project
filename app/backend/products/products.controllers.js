@@ -1,0 +1,1 @@
+const productRoutes = require('./products.routes')
