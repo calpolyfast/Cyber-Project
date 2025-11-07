@@ -8,17 +8,19 @@ function App() {
   return (
     <Router>
         <NavBar></NavBar>
-        <Routes>
-            <Route index element={
-                <Home />
-            } />
-            <Route path={"/about"} element={
-                <About />
-            } />
-            <Route path={"/shopping-cart"} element={
-                <Cart />
-            } />
-        </Routes>
+        <div className="flex flex-col mx-8 md:mx-32">
+            <Routes>
+                <Route index element={
+                    <Home />
+                } />
+                <Route path={"/about"} element={
+                    <About />
+                } />
+                <Route path={"/shopping-cart"} element={
+                    <Cart />
+                } />
+            </Routes>
+        </div>
     </Router>
   )
 }
