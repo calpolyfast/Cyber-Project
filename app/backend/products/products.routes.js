@@ -1,22 +1,8 @@
-import { getAllPrices } from './products.model';
+import { Router } from 'express';
+import { getAllProducts } from './products.controllers.js';
 
-const express = require('express');
-const productModels = require('./products.model');
-const products = express.Router();
+const productsRouter = Router()
 
+products.get('/products', getAllProducts);
 
-products.get('/products', (req, res) => { 
-    res.send('Products!!!')
-});
-
-products.get('/products/', (req, res) => {
-    try {
-        res.render
-
-    }
-    catch {
-
-    }
-})
-
-module.exports = products;
+export default productsRouter

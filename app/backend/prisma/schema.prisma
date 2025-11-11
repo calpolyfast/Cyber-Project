@@ -18,5 +18,4 @@ model Product {
   price Double 
   name  String
   sale? boolean default(true)
-
 }
