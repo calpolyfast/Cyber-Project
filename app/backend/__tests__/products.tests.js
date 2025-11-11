@@ -1,7 +1,7 @@
 jest.mock("../src/config/db.js", () => ({
     __esModule: true,
     default: {
-        products: {
+        product: {
             findMany: jest.fn(),
             findUnique: jest.fn(),
             create: jest.fn(),
@@ -42,10 +42,10 @@ describe('Product Controllers', () => {
 
         await getAllProducts(req, res)
 
-        expect(prisma.products.findMany).toHaveBeenCalledWith({
+        expect(prisma.product.findMany).toHaveBeenCalledWith({
             orderBy: { name: 'asc' },
         })
-        expect(prisma.products.findMany).toHaveBeenCalledTimes(1)
+        expect(prisma.product.findMany).toHaveBeenCalledTimes(1)
         expect(res.status).toHaveBeenCalledWith(200)
         expect(res.json).toHaveBeenCalledWith(sortedProductData)
     })
@@ -58,14 +58,14 @@ describe('Product Controllers', () => {
             price: 49.99
         }
 
-        prisma.products.findUnique.mockResolvedValue(mockProduct)
+        prisma.product.findUnique.mockResolvedValue(mockProduct)
 
         const req = mockReq({}, { id: '1' })
         const res = mockRes()
 
         await getProductById(req, res)
 
-        expect(prisma.products.findUnique).toHaveBeenCalledWith({
+        expect(prisma.product.findUnique).toHaveBeenCalledWith({
             where: { id: 1 }
         })
         expect(res.status).toHaveBeenCalledWith(200)
@@ -73,14 +73,14 @@ describe('Product Controllers', () => {
     })
 
     test('getProductById returns 404 and error message when product not found', async () => {
-        prisma.products.findUnique.mockResolvedValue(null)
+        prisma.product.findUnique.mockResolvedValue(null)
 
         const req = mockReq({}, { id: '1' })
         const res = mockRes()
 
         await getProductById(req, res)
 
-        expect(prisma.products.findUnique).toHaveBeenCalledWith({
+        expect(prisma.product.findUnique).toHaveBeenCalledWith({
             where: { id: 1 }
         })
         expect(res.status).toHaveBeenCalledWith(404)
@@ -98,14 +98,14 @@ describe('Product Controllers', () => {
             ...mockReqData
         }
 
-        prisma.products.create.mockResolvedValue(mockCreatedProduct)
+        prisma.product.create.mockResolvedValue(mockCreatedProduct)
 
         const req = mockReq(mockReqData, {})
         const res = mockRes()
 
         await createProduct(req, res)
 
-        expect(prisma.products.create).toHaveBeenCalledWith({
+        expect(prisma.product.create).toHaveBeenCalledWith({
             data: {
                 name: 'Bag',
                 description: 'A really cool bag',
@@ -128,14 +128,14 @@ describe('Product Controllers', () => {
             price: 67.00
         }
 
-        prisma.products.findUnique.mockResolvedValue(mockExistingProduct)
+        prisma.product.findUnique.mockResolvedValue(mockExistingProduct)
 
         const req = mockReq(mockReqData, {})
         const res = mockRes()
 
         await createProduct(req, res)
 
-        expect(prisma.products.findUnique).toHaveBeenCalledWith({
+        expect(prisma.product.findUnique).toHaveBeenCalledWith({
             where: { name: 'Bag' }
         })
 
@@ -159,14 +159,14 @@ describe('Product Controllers', () => {
     })
 
     test('deleteProduct successfully deletes product from db', async () => {
-        prisma.products.delete.mockResolvedValue({ id: '1', name: 'Bag' })
+        prisma.product.delete.mockResolvedValue({ id: '1', name: 'Bag' })
 
         const req = mockReq({}, { id: '1' })
         const res = mockRes()
 
         await deleteProduct(req, res)
 
-        expect(prisma.products.delete).toHaveBeenCalledWith({
+        expect(prisma.product.delete).toHaveBeenCalledWith({
             where: { id: 1 }
         })
         expect(res.status).toHaveBeenCalledWith(204)
@@ -174,7 +174,7 @@ describe('Product Controllers', () => {
     })
 
     test('deleteProduct returns 400 if product to delete does not exist', async () => {
-        prisma.products.delete.mockImplementation(() => {
+        prisma.product.delete.mockImplementation(() => {
             throw new Error()
         })
 
@@ -183,7 +183,7 @@ describe('Product Controllers', () => {
 
         await deleteProduct(req, res)
 
-        expect(prisma.products.delete).toHaveBeenCalledWith({
+        expect(prisma.product.delete).toHaveBeenCalledWith({
             where: { id: 1 }
         })
         expect(res.status).toHaveBeenCalledWith(400)
