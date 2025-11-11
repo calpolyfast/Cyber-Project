@@ -11,7 +11,7 @@ jest.mock("../src/config/db.js", () => ({
 }))
 
 import prisma from "../src/config/db.js"
-import { getAllProducts, createProduct, updateProduct, deleteProduct } from "../products/products.controllers.js"
+import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../products/products.controllers.js"
 
 const mockReq = (body = {}, params = {}) => ({ body, params })
 const mockRes = () => {
@@ -35,7 +35,7 @@ describe('Product Controllers', () => {
         const sortedProductData = mockProductData.sort((a, b) => a.name.localeCompare(b.name))
 
         // Mock the prisma findMany call
-        prisma.user.findMany.mockResolvedValue(mockProductData)
+        prisma.product.findMany.mockResolvedValue(mockProductData)
 
         const req = mockReq()
         const res = mockRes()
