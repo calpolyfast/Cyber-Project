@@ -8,45 +8,10 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
-}
-
-model VulnerabilityGroup{
-  id    Int @id @default(autoincrement())
-  name  String
-  vulnerabilities Vulnerability[]
-}
-
-model Vulnerability {
-  id                    Int @id @default(autoincrement())
-  name                  String
-  description           String
-  vulnerabilityGroupId  Int?
-  vulnerabilityGroup    VulnerabilityGroup?  @relation(fields: [vulnerabilityGroupId], references: [id])
-}
-
-model Person {
-  name    String
-  email   String
-  phone   String
-  pass    String
-  social  Int
-}
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id          Int    @id @default(autoincrement())
+  name        String
+  email       String @unique
+  password    String
 }
 
 model VulnerabilityGroup{

@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import prisma from './config/db.js'
 
+import UserRouter from './users/users.routes.js'
 import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.routes.js'
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
+app.use('/users', UserRouter)
 app.use('/vulnerability-groups', VulnerabilityGroupRouter)
 app.use('/vulnerabilities', VulnerabilityRouter)
 
