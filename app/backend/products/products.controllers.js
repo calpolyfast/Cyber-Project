@@ -26,10 +26,10 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   const { item, amount, currency } = req.body;
   try {
-    const newproduct = await prisma.product.create({
+    const newProduct = await prisma.product.create({
       data: { item, amount: parseFloat(amount), currency },
     });
-    res.status(201).json(newproduct);
+    res.status(201).json(newProduct);
   } catch (error) {
     res.status(400).json({ error: 'Failed to create product' });
   }
@@ -55,7 +55,7 @@ export const deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.product.delete({ where: { id: Number(id) } });
-    res.json({ message: 'product deleted successfully' });
+    res.json({ message: 'Product deleted successfully' });
   } catch (error) {
     res.status(400).json({ error: 'Failed to delete product' });
   }
