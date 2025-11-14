@@ -34,5 +34,3 @@ app.get('/db-test', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });
-
-app.use(products);
