@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
+import { searchProduct } from '../api/products.mjs';
 
 const ProductListing = ({ name, image, description, price }) => {
     return <div className="flex flex-row rounded-sm border-2 border-secondary gap-4 bg-white">
@@ -24,6 +25,8 @@ const SearchBar = ({ reflectedQuery }) => {
 
 const Home = () => {
     const [reflectedQuery, setReflectedQuery] = useState("")
+
+    // TODO: Use searchProducts from api/products.mjs to fetch from the backend
 
     const products = [
         {
@@ -57,7 +60,7 @@ const Home = () => {
             <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
             <SearchBar reflectedQuery={reflectedQuery} />
             <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
-                return <ProductListing name={product.name} image={product.image} description={product.description} price={product.price}/>
+                return <ProductListing key={index} name={product.name} image={product.image} description={product.description} price={product.price}/>
             })}</div>
         </div>
     </div>
