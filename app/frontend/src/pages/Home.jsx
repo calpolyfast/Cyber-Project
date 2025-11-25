@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
 
@@ -14,7 +15,16 @@ const ProductListing = ({ name, image, description, price }) => {
     </div>
 }
 
+const SearchBar = ({ reflectedQuery }) => {
+    return <div className="flex justify-end">
+        <div className="flex-3/4" dangerouslySetInnerHTML={{__html: reflectedQuery}}></div> {/* This is where the server's response gets rendered */}
+        <input className="flex-1/2 border rounded p-1" placeholder="Search..."></input>
+    </div>
+}
+
 const Home = () => {
+    const [reflectedQuery, setReflectedQuery] = useState("")
+
     const products = [
         {
             name: "Product 1",
@@ -42,14 +52,15 @@ const Home = () => {
         }
     ]
     return <div>
-        <img style={{height: 300}} src={banner_image} alt="placeholder"></img>
+    <img style={{height: 300}} src={banner_image} alt="placeholder"></img>
         <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
-        <h1 className="text-4xl text-center font-bold">Home Page</h1>
-        <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
-            return <ProductListing name={product.name} image={product.image} description={product.description} price={product.price}/>
-        })}</div>
+            <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
+            <SearchBar reflectedQuery={reflectedQuery} />
+            <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
+                return <ProductListing name={product.name} image={product.image} description={product.description} price={product.price}/>
+            })}</div>
         </div>
-        </div>
+    </div>
 }
 
 export default Home
