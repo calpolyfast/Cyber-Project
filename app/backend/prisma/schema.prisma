@@ -26,3 +26,10 @@ model Vulnerability {
   vulnerabilityGroupId  Int?
   vulnerabilityGroup    VulnerabilityGroup?  @relation(fields: [vulnerabilityGroupId], references: [id])
 }
+
+model Product {
+  id      Int     @id @default(autoincrement())
+  price   Decimal @db.Decimal(10, 2) 
+  name    String
+  visible Boolean @default(true)
+}
