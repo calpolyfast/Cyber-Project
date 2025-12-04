@@ -4,7 +4,7 @@ import prisma from './config/db.js'
 
 import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.routes.js'
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
-import ProductRouter from '../products/products.routes.js';
+import ProductRouter from './products/products.routes.js';
 
 dotenv.config()
 
@@ -34,5 +34,3 @@ app.get('/db-test', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });
-
-app.use(products);

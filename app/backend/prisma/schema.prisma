@@ -28,8 +28,8 @@ model Vulnerability {
 }
 
 model Product {
-  id    Int 
-  price Double 
-  name  String
-  sale? boolean default(true)
+  id      Int     @id @default(autoincrement())
+  price   Decimal @db.Decimal(10, 2) 
+  name    String
+  visible Boolean @default(true)
 }
