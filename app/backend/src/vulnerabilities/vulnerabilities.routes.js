@@ -1,0 +1,15 @@
+import { Router } from "express";
+import 
+{ 
+    createVulnerability, deleteVulnerability, 
+    getAllVulnerabilities, getVulnerabilityById 
+} from "./vulnerabilities.controllers.js";
+
+const router = Router()
+
+router.get('/', getAllVulnerabilities)
+router.get('/:id', getVulnerabilityById)
+router.post('/', createVulnerability)
+router.delete('/:id', deleteVulnerability)
+
+export default router
