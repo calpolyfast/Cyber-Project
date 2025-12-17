@@ -16,7 +16,10 @@ export const getAllProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   const { id } = req.params;
   try {
-    const product = await prisma.product.findUnique({ where: { id: Number(id) } });
+    const product = await prisma.product.findUnique({ 
+      where: { id: Number(id) },
+      include: { image: true }
+    });
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json(product);
   } catch (error) {
@@ -33,11 +36,12 @@ export const getProductBySearchName = async (req, res) => {
     try {
         const products = await prisma.product.findMany({
             where: {
-            name: {
-                contains: name,
-                mode: 'insensitive',
+              name: {
+                  contains: name,
+                  mode: 'insensitive',
+              },
             },
-            },
+            include: { image: true }
         });
         res.json(products);
     } catch (error) {
@@ -88,6 +92,7 @@ export const createProduct = async (req, res) => {
         image: uploadedImage ? { create: uploadedImage } : undefined,
         visible 
       },
+      include: { image: true}
     });
     res.status(201).json(newProduct);
   } catch (err) {
@@ -99,12 +104,49 @@ export const createProduct = async (req, res) => {
 // PUT /products/:id - Update an existing product
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, price, visible } = req.body;
+  let { name, price, visible } = req.body;
+  visible = visible === 'true' || visible === true
   const normalizedPrice = Number(parseFloat(price).toFixed(2))
+
+  let updatedImage
+  if (req.file) {
+    try {
+      // Delete old iamge from cloudinary
+      const { image: oldImage } = await prisma.product.findUnique({ 
+        where: { id: Number(id) },
+        include: { image: true }
+      });
+      if (oldImage) {
+        await cloudinary.uploader.destroy(oldImage.public_id);
+      }
+      // Upload new image
+      const image = await cloudinary.uploader.upload(req.file.path);
+      if (!image) {
+        return res.status(500).json({ success: false, message: 'Image upload failed' });
+      }
+      updatedImage = {
+        url: image.secure_url,
+        public_id: image.public_id
+      };
+    } catch (err) {
+      console.error(err)
+      return res.status(500).json({ 
+        error: `Image upload failed. Product '${name}' could not be updated` 
+      });
+    }
+  }
   try {
     const updatedProduct = await prisma.product.update({
       where: { id: Number(id) },
-      data: { name, price: normalizedPrice, visible },
+      data: { 
+        name, 
+        price: normalizedPrice, 
+        visible, 
+        image: updatedImage ? { 
+          upsert: { create: updatedImage, update: updatedImage } 
+        } : undefined
+      },
+      include: { image: true }
     });
     res.json(updatedProduct);
   } catch (error) {
