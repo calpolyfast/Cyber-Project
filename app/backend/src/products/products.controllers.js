@@ -1,9 +1,10 @@
 import prisma from "../config/db.js";
+import cloudinary from "../utils/cloudinary.js";
 
 // GET /products - Get all products
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({ include: { image: true } });
     res.json(products);
   } catch (error) {
     console.error(error)
@@ -24,7 +25,7 @@ export const getProductById = async (req, res) => {
 };
 
 // GET /products/search?name=<name> - Search for products by name
-export const searchProductByName = async (req, res) => {
+export const getProductBySearchName = async (req, res) => {
     const { name } = req.query;
     if(!name) {
         return res.status(400).json({ error: "Missing search parameter: name" })
@@ -47,18 +48,51 @@ export const searchProductByName = async (req, res) => {
 
 // POST /products - Create a new product
 export const createProduct = async (req, res) => {
-  const { name, price, visible } = req.body;
+  // Check validity of required fields
+  let { name, price, visible } = req.body;
   if (!name || !price || !visible){
     return res.status(400).json({ error: 'Missing required fields (name, price, visible) '})
   }
+  visible = visible === 'true' || visible === true
+
+  // Normalize price to 2 decimal places
   const normalizedPrice = Number(parseFloat(price).toFixed(2))
+
+  // Upload image to cloudinary if image is provided
+  let uploadedImage
+  try{
+    if(req.file){
+      const image = await cloudinary.uploader.upload(req.file.path);
+      if (!image) {
+          return res.status(500).json({ success: false, message: 'Image upload failed' });
+      }
+      uploadedImage = {
+        url: image.secure_url,
+        public_id: image.public_id
+      };
+    }
+  }
+  catch(err){
+    console.error(err)
+    return res.status(500).json({ 
+      error: `Image upload failed. New product '${name}' could not be created` 
+    });
+  }
+  
+  // Create product in db
   try {
     const newProduct = await prisma.product.create({
-      data: { name, price: normalizedPrice, visible },
+      data: { 
+        name, 
+        price: normalizedPrice, 
+        image: uploadedImage ? { create: uploadedImage } : undefined,
+        visible 
+      },
     });
     res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to create product' });
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Failed to create product' });
   }
 };
 
