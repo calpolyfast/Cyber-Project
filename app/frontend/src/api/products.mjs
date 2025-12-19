@@ -22,7 +22,13 @@ export const searchProduct = (searchQuery) => {
     })
 };
 
-export const addProduct = (product) => {
+export const addProduct = (formData) => {
     // Fetch from the backend with search query
-    return axios.post(`${API_BASE_URL}/products`, product)
+    return axios.post(`${API_BASE_URL}/products`, formData, 
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    )
 };

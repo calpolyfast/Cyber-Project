@@ -2,15 +2,17 @@ import { addProduct } from "../api/products.mjs";
 
 const Admin = () => {
     const handleNewProduct = (e) => {
-        const form = e.target;
         e.preventDefault();
-        const product = {
-            name: form.productname.value, 
-            price: form.productprice.value, 
-            visible: form.productname.visible === "on"
-        }
-        console.log(product)
-        addProduct(product);
+        const form = e.target;
+        const formData = new FormData();
+        const fileInput = form.image;
+
+        formData.append("file", fileInput.files[0]);
+        formData.append("name", form.productname.value);
+        formData.append("price", form.productprice.value);
+        formData.append("visible", form.productvisibility.checked);
+
+        addProduct(formData);
     }
 
     return <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
@@ -26,6 +28,8 @@ const Admin = () => {
                     <label>Visible</label>
                     <input type="checkbox" id="productvisibility" className="border rounded-sm"></input>
                 </div>
+                <label>Upload Image</label>
+                <input type="file" name="image" accept="image/*" required></input>
                 <button className="hover:bg-white rounded-sm border" type="submit">Submit</button>
             </fieldset>
             <fieldset>
