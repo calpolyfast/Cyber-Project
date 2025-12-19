@@ -3,6 +3,7 @@ import Home from "./pages/Home"
 import About from "./pages/About"
 import Cart from "./pages/Cart"
 import NavBar from "./components/NavBar"
+import Admin from "./pages/Admin"
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
                 } />
                 <Route path={"/shopping-cart"} element={
                     <Cart />
+                } />
+                <Route path={"/admin"} element={
+                    <Admin />
                 } />
             </Routes>
         </div>

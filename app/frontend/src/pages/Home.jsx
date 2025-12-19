@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
+import { getProducts, searchProduct } from '../api/products.mjs';
+import SearchBar from '../components/SearchBar';
+import { useSearchParams } from 'react-router-dom';
 
 const ProductListing = ({ name, image, description, price }) => {
     return <div className="flex flex-row rounded-sm border-2 border-secondary gap-4 bg-white">
@@ -15,49 +18,25 @@ const ProductListing = ({ name, image, description, price }) => {
     </div>
 }
 
-const SearchBar = ({ reflectedQuery }) => {
-    return <div className="flex justify-end">
-        <div className="flex-3/4" dangerouslySetInnerHTML={{__html: reflectedQuery}}></div> {/* This is where the server's response gets rendered */}
-        <input className="flex-1/2 border rounded p-1" placeholder="Search..."></input>
-    </div>
-}
-
 const Home = () => {
-    const [reflectedQuery, setReflectedQuery] = useState("")
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [reflectedQuery, setReflectedQuery] = useState("");
+    const [products, setProducts] = useState([]);
+    
+    // {
+    //     name: "Product 1",
+    //     image: product_image,
+    //     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    //     price: "$0.00"
+    // }
 
-    const products = [
-        {
-            name: "Product 1",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        },
-        {
-            name: "Product 2",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        },
-        {
-            name: "Product 3",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        },
-        {
-            name: "Product 4",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        }
-    ]
     return <div>
-    <img style={{height: 300}} src={banner_image} alt="placeholder"></img>
+    {/*<img style={{height: 300}} src={banner_image} alt="placeholder"></img>*/}
         <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
             <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
-            <SearchBar reflectedQuery={reflectedQuery} />
+            <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
             <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
-                return <ProductListing name={product.name} image={product.image} description={product.description} price={product.price}/>
+                return <ProductListing key={index} name={product.name} image={product.image} description={product.description} price={product.price}/>
             })}</div>
         </div>
     </div>
