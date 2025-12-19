@@ -1,11 +1,22 @@
 import { Router } from 'express';
-import { getAllProducts, createProduct, getProductById, searchProductByName } from './products.controllers.js';
+import { 
+    getAllProducts, getProductById, 
+    getProductBySearchName, createProduct, 
+    updateProduct, deleteProduct 
+} from './products.controllers.js';
+import upload from '../middleware/multer.js';
+import verifyOwner from '../middleware/verifyOwner.js';
 
 const productsRouter = Router()
 
 productsRouter.get('/', getAllProducts)
-productsRouter.get('/search', searchProductByName)
+productsRouter.get('/search', getProductBySearchName)
 productsRouter.get('/:id', getProductById)
-productsRouter.post('/', createProduct)
+
+productsRouter.use(verifyOwner)
+productsRouter.delete('/:id', deleteProduct)
+// Add middleware 'upload.single('image')' to handle image upload
+productsRouter.post('/', upload.single('image'), createProduct)
+productsRouter.put('/:id', upload.single('image'), updateProduct)
 
 export default productsRouter
