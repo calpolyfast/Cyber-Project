@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
-import { searchProduct } from '../api/products.mjs';
+import { getProducts, searchProduct } from '../api/products.mjs';
 import SearchBar from '../components/SearchBar';
 import { useSearchParams } from 'react-router-dom';
 
@@ -20,41 +20,21 @@ const ProductListing = ({ name, image, description, price }) => {
 
 const Home = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [reflectedQuery, setReflectedQuery] = useState("")
+    const [reflectedQuery, setReflectedQuery] = useState("");
+    const [products, setProducts] = useState([]);
+    
+    // {
+    //     name: "Product 1",
+    //     image: product_image,
+    //     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    //     price: "$0.00"
+    // }
 
-    // TODO: Use searchProducts from api/products.mjs to fetch from the backend
-
-    const products = [
-        {
-            name: "Product 1",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        },
-        {
-            name: "Product 2",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        },
-        {
-            name: "Product 3",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        },
-        {
-            name: "Product 4",
-            image: product_image,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            price: "$0.00"
-        }
-    ]
     return <div>
-    <img style={{height: 300}} src={banner_image} alt="placeholder"></img>
+    {/*<img style={{height: 300}} src={banner_image} alt="placeholder"></img>*/}
         <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
             <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
-            <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={products} />
+            <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
             <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
                 return <ProductListing key={index} name={product.name} image={product.image} description={product.description} price={product.price}/>
             })}</div>

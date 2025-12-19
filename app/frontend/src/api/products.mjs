@@ -21,3 +21,8 @@ export const searchProduct = (searchQuery) => {
         }
     })
 };
+
+export const addProduct = (product) => {
+    // Fetch from the backend with search query
+    return axios.post(`${API_BASE_URL}/products`, product)
+};

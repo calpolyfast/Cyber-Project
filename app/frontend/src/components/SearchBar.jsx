@@ -8,8 +8,8 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
 
     useEffect(() => {
         getProducts()
-            .then(() => {
-                console.log("Searchded")
+            .then(({ data }) => {
+                setProducts(data)
             })
     }, [])
     

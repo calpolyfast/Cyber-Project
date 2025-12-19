@@ -48,7 +48,7 @@ export const searchProductByName = async (req, res) => {
 // POST /products - Create a new product
 export const createProduct = async (req, res) => {
   const { name, price, visible } = req.body;
-  if (!name || !price || !visible){
+  if (name === undefined || price === undefined || visible === undefined){
     return res.status(400).json({ error: 'Missing required fields (name, price, visible) '})
   }
   const normalizedPrice = Number(parseFloat(price).toFixed(2))
