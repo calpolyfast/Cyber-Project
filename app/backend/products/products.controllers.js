@@ -24,25 +24,35 @@ export const getProductById = async (req, res) => {
 
 // POST /products - Create a new product
 export const createProduct = async (req, res) => {
-  const { item, amount, currency } = req.body;
+  const { item, price, currency } = req.body;
   try {
     const newProduct = await prisma.product.create({
-      data: { item, amount: parseFloat(amount), currency },
+      data: { item, price: parseFloat(price), currency },
     });
     res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to create product' });
+    const isDuplicate = false;
+    const index = 0;
+    while (!isDuplicate && index < products.length) {
+      if (newProduct.item.id === req.body[index].item.id) {
+        isDuplicate = true;
+        res.status(400).json({ error: 'Item already exists with name' + ' ' + products[index].item.id });
+      }
+      index++;
+    }
   }
+   catch (error) {
+    res.status(400).json({ error: 'Failed to create product' });
+   }
 };
 
 // PUT /products/:id - Update an existing product
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { amount, currency } = req.body;
+  const { price, currency } = req.body;
   try {
     const updatedProduct = await prisma.product.update({
       where: { id: Number(id) },
-      data: { amount: parseFloat(amount), currency },
+      data: { price: parseFloat(price), currency },
     });
     res.json(updatedProduct);
   } catch (error) {
@@ -57,7 +67,7 @@ export const deleteProduct = async (req, res) => {
     await prisma.product.delete({ where: { id: Number(id) } });
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(400).json({ error: 'Failed to delete product' });
+    res.status(404).json({ error: 'Failed to delete product' });
   }
 };
 
