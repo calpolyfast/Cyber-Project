@@ -7,10 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+<<<<<<< HEAD
 model User {
   id    Int    @id @default(autoincrement())
   name  String
   email String @unique
+=======
+enum Role {
+  User
+  Admin
+}
+
+model User {
+  id          Int     @id @default(autoincrement())
+  username    String  @unique
+  email       String  @unique
+  password    String
+  role        Role    @default(User)  
+>>>>>>> b2dd9d5e86cbfd583cdfb72d662000192ff3cbbf
 }
 
 model VulnerabilityGroup{
@@ -27,9 +41,27 @@ model Vulnerability {
   vulnerabilityGroup    VulnerabilityGroup?  @relation(fields: [vulnerabilityGroupId], references: [id])
 }
 
+<<<<<<< HEAD
 model Product {
   id    Int 
   price Double 
   name  String
   sale? boolean default(true)
 }
+=======
+model ImageField {
+  id        Int     @id @default(autoincrement())
+  url       String
+  public_id String
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int     @unique
+}
+
+model Product {
+  id      Int       @id @default(autoincrement())
+  name    String
+  price   Decimal   @db.Decimal(10, 2)
+  image   ImageField?
+  visible Boolean   @default(true)
+}
+>>>>>>> b2dd9d5e86cbfd583cdfb72d662000192ff3cbbf

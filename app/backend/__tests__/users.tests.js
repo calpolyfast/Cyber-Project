@@ -1,13 +1,22 @@
 jest.mock("../src/config/db.js", () => ({
     __esModule: true,
     default: {
-            users: {
-                findMany: jest.fn(),
-                findUnique: jest.fn(),
-                create: jest.fn(),
-                delete: jest.fn(),
-            }
+        user: {
+            findMany: jest.fn(),
+            findUnique: jest.fn(),
+            create: jest.fn(),
+            delete: jest.fn(),
+        }
     }
+}))
+
+jest.mock('bcrypt', () => ({
+    hash: jest.fn(), 
+    compare: jest.fn(), 
+}));
+
+jest.mock('jsonwebtoken', () => ({
+    sign: jest.fn(),
 }))
 
 import prisma from "../src/config/db.js";

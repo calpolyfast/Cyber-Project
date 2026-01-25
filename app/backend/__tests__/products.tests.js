@@ -11,7 +11,7 @@ jest.mock("../src/config/db.js", () => ({
 }))
 
 import prisma from "../src/config/db.js"
-import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../products/products.controllers.js"
+import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../src/products/products.controllers.js"
 
 const mockReq = (body = {}, params = {}) => ({ body, params })
 const mockRes = () => {
