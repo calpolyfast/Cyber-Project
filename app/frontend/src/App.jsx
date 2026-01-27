@@ -4,6 +4,7 @@ import About from "./pages/About"
 import Cart from "./pages/Cart"
 import NavBar from "./components/NavBar"
 import Admin from "./pages/Admin"
+import Authentication from "./pages/Authentication"
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
                 } />
                 <Route path={"/admin"} element={
                     <Admin />
+                } />
+                <Route path={"/auth"} element={
+                    <Authentication />
                 } />
             </Routes>
         </div>

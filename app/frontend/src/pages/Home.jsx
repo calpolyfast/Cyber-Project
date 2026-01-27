@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-const Home = () => {
-    return <div>Home Page</div>
-=======
 import { useEffect, useState } from 'react';
 import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
@@ -44,7 +40,6 @@ const Home = () => {
             })}</div>
         </div>
     </div>
->>>>>>> c4749468ee2c9d20d3a8115f34197d8b3aec1ddc
 }
 
 export default Home
