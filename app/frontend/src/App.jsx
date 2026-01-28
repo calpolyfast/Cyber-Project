@@ -4,7 +4,8 @@ import About from "./pages/About"
 import Cart from "./pages/Cart"
 import NavBar from "./components/NavBar"
 import Admin from "./pages/Admin"
-import Authentication from "./pages/Authentication"
+import Register from "./pages/Register"
+import Login from "./pages/Login"
 
 function App() {
   return (
@@ -24,8 +25,11 @@ function App() {
                 <Route path={"/admin"} element={
                     <Admin />
                 } />
-                <Route path={"/auth"} element={
-                    <Authentication />
+                <Route path={"/login"} element={
+                    <Login />
+                } />
+                <Route path={"/register"} element={
+                    <Register />
                 } />
             </Routes>
         </div>
