@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createContext } from "react";
-import { postLogin, postRegister, storeToken } from "../api/auth.mjs";
+import { getStoredToken, postLogin, postRegister, storeToken } from "../api/auth.mjs";
 
 export const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState({})
+    const [token, setToken] = useState("test")
 
     const login = async (username, password) => {
         try {
@@ -18,6 +18,15 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    useEffect(() => {
+        const token = getStoredToken()
+        
+        if (token != null)
+        {
+            setToken(token)
+        }
+    }, [])
+
     const logout = () => {
         setUser({})
     }
@@ -27,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
     }
 
-    return <AuthContext.Provider value={{ login, logout, register }}>
+    return <AuthContext.Provider value={{ login, logout, register, token }}>
         {children}
     </AuthContext.Provider>
 }
