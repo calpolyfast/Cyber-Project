@@ -5,16 +5,31 @@ import { getStoredToken, postLogin, postRegister, storeToken } from "../api/auth
 export const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState("test")
+    const [ token, setToken ] = useState()
+    const [ loaded, setLoaded ] = useState(false)
 
     const login = async (username, password) => {
         try {
             const res = await postLogin(username, password)
-            setToken(res.data)
-            storeToken(res.data)
+            setToken(res.data.token)
+            storeToken(res.data.token)
 
         } catch (error) {
             console.error("Login failed: ", error);
+        }
+    }
+
+    const logout = () => {
+        setToken()
+    }
+
+    const register = async (username, email, password) => {
+        try {
+            const res = await postRegister(username, email, password);
+            await login(username, password)
+
+        } catch (error) {
+            console.error("Register failed: ", error);
         }
     }
 
@@ -25,18 +40,10 @@ export const AuthProvider = ({ children }) => {
         {
             setToken(token)
         }
+        setLoaded(true)
     }, [])
 
-    const logout = () => {
-        setUser({})
-    }
-
-    const register = (username, email, password) => {
-        postRegister(username, email, password)
-
-    }
-
-    return <AuthContext.Provider value={{ login, logout, register, token }}>
+    return <AuthContext.Provider value={{ login, logout, register, token, loaded }}>
         {children}
     </AuthContext.Provider>
 }

@@ -1,13 +1,16 @@
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const ProtectedRoute = ({ children }) => {
-    const { token } = useContext(AuthContext);
+    const { token, loaded } = useContext(AuthContext);
 
-    console.log(token)
+    if (!loaded)
+    {
+        return null
+    }
 
-    if (token == null) {
+    if (!token) {
         return <Navigate to="/login" replace />
     }
     

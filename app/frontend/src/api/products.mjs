@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const getProducts = () => {
     // Fetch from the backend with search query
-    return api.get(`${API_BASE_URL}/products`, {
+    return api.get(`/products`, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -14,7 +14,7 @@ export const getProducts = () => {
 
 export const searchProduct = (searchQuery) => {
     // Fetch from the backend with search query
-    return api.get(`${API_BASE_URL}/search`, {
+    return api.get(`/search`, {
         params: {
             query: searchQuery
         },
@@ -26,7 +26,7 @@ export const searchProduct = (searchQuery) => {
 
 export const addProduct = (formData) => {
     // Fetch from the backend with search query
-    return api.post(`${API_BASE_URL}/products`, formData, 
+    return api.post(`/products`, formData, 
         {
             headers: {
                 'Content-Type': 'multipart/form-data'

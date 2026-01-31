@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { postLogin } from "../api/auth.mjs";
+import { AuthContext } from "../components/AuthContext";
 
 const LoginForm = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const { login } = useContext(AuthContext)
+
     function handleSubmit(e) {
         e.preventDefault();
-        // Do something with { username, email, password }
-        console.log({ username, email, password });
+        login(username, password)
     }
 
     return (

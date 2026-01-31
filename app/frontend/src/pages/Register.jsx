@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../components/AuthContext";
 
 const RegisterForm = () => {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [ username, setUsername ] = useState("");
+    const [ email, setEmail ] = useState("");
+    const [ password, setPassword ] = useState("");
+
+    const { register } = useContext(AuthContext);
 
     function handleSubmit(e) {
         e.preventDefault();
-        // Do something with { username, email, password }
-        console.log({ username, email, password });
+        register(username, email, password)
     }
 
     return (
