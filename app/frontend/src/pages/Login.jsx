@@ -1,16 +1,19 @@
 import { useContext, useState } from "react";
 import { postLogin } from "../api/auth.mjs";
 import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const { login } = useContext(AuthContext)
 
-    function handleSubmit(e) {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        login(username, password)
+        await login(username, password);
+        navigate('/');
     }
 
     return (
