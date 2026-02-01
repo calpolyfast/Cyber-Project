@@ -4,6 +4,7 @@ import About from "./pages/About"
 import Cart from "./pages/Cart"
 import NavBar from "./components/NavBar"
 import Admin from "./pages/Admin"
+import Login from "./pages/Login"
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
                 } />
                 <Route path={"/admin"} element={
                     <Admin />
+                } />
+                <Route path={"/login"} element={
+                    <Login />
                 } />
             </Routes>
         </div>
