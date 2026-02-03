@@ -98,7 +98,7 @@ export const createProduct = async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Failed to create product' });
-  }
+  } 
 };
 
 // PUT /products/:id - Update an existing product
