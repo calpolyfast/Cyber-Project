@@ -1,4 +1,5 @@
 import { addProduct } from "../api/products.mjs";
+import ContentWrapper from "../components/ContentWrapper";
 
 const Admin = () => {
     const handleNewProduct = (e) => {
@@ -15,7 +16,7 @@ const Admin = () => {
         addProduct(formData);
     }
 
-    return <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
+    return <ContentWrapper>
         <h1 className="text-4xl font-bold text-center text-black p-2">Admin Dashboard</h1>
         <form onSubmit={handleNewProduct} className="sm:flex sm:flex-col md:grid md:grid-cols-2">
             <fieldset className="flex flex-col gap-2">
@@ -36,7 +37,7 @@ const Admin = () => {
                 <legend>Manage Products</legend>
             </fieldset>
         </form>
-    </div>
+    </ContentWrapper>
 }
 
 export default Admin

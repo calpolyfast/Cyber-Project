@@ -4,6 +4,7 @@ import product_image from '../assets/product_placeholder.png';
 import { getProducts, searchProduct } from '../api/products.mjs';
 import SearchBar from '../components/SearchBar';
 import { useSearchParams } from 'react-router-dom';
+import ContentWrapper from '../components/ContentWrapper';
 
 const ProductListing = ({ name, image, description, price }) => {
     return <div className="flex flex-row rounded-sm border-2 border-secondary gap-4 bg-white">
@@ -30,16 +31,13 @@ const Home = () => {
     //     price: "$0.00"
     // }
 
-    return <div>
-    {/*<img style={{height: 300}} src={banner_image} alt="placeholder"></img>*/}
-        <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
-            <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
-            <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
-            <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
-                return <ProductListing key={index} name={product.name} image={product.image} description={product.description} price={product.price}/>
-            })}</div>
-        </div>
-    </div>
+    return <ContentWrapper>
+        <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
+        <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
+        <div className="flex flex-col md:grid gap-4 grid-cols-2">{products.map((product, index) => {
+            return <ProductListing key={index} name={product.name} image={product.image} description={product.description} price={product.price}/>
+        })}</div>
+    </ContentWrapper>
 }
 
 export default Home

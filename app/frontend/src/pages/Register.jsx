@@ -20,7 +20,6 @@ const Register = () => {
     }
 
     return <div>
-    {/*<img style={{height: 300}} src={banner_image} alt="placeholder"></img>*/}
         <form className="flex flex-col gap-4 bg-primary-light mt-8 p-4" onSubmit={handleSubmit}>
             <h1 className="text-4xl text-center border-b font-bold">Register</h1>
             <label>Username</label>
