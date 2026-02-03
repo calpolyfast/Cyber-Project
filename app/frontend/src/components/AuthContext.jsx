@@ -6,13 +6,23 @@ export const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
     const [ token, setToken ] = useState()
+    const [ isAuthenticated, setIsAuthenticated ] = useState(false)
     const [ loaded, setLoaded ] = useState(false)
 
     const login = async (username, password) => {
         try {
             const res = await postLogin(username, password)
-            setToken(res.data.token)
-            storeToken(res.data.token)
+
+            if (res.data?.token)
+            {
+                setIsAuthenticated(true)
+            }
+
+            setToken(res.data?.token)
+            
+            // Store token in localStorage - Token exfiltration via XSS vulnerability
+            storeToken(res.data?.token)
+            return res.data?.token
 
         } catch (error) {
             console.error("Login failed: ", error);
@@ -26,13 +36,15 @@ export const AuthProvider = ({ children }) => {
     const register = async (username, email, password) => {
         try {
             const res = await postRegister(username, email, password);
-            await login(username, password)
+            const token = await login(username, password)
+            return token
 
         } catch (error) {
             console.error("Register failed: ", error);
         }
     }
 
+    // Effect that checks if the user is authenticated 
     useEffect(() => {
         const token = getStoredToken()
         
@@ -43,7 +55,7 @@ export const AuthProvider = ({ children }) => {
         setLoaded(true)
     }, [])
 
-    return <AuthContext.Provider value={{ login, logout, register, token, loaded }}>
+    return <AuthContext.Provider value={{ login, logout, register, token, loaded, isAuthenticated }}>
         {children}
     </AuthContext.Provider>
 }
