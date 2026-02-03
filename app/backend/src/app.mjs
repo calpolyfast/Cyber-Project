@@ -9,7 +9,7 @@ import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 import ProductRouter from './products/products.routes.js';
 
-dotenv.config()
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
