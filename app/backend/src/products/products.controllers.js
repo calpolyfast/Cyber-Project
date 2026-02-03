@@ -53,11 +53,10 @@ export const getProductBySearchName = async (req, res) => {
 // POST /products - Create a new product
 export const createProduct = async (req, res) => {
   // Check validity of required fields
-  const { name, price, visible } = req.body;
-  if (name === undefined || price === undefined || visible === undefined){
+  let { name, price, visible } = req.body;
+  if (!name || !price || !visible){
     return res.status(400).json({ error: 'Missing required fields (name, price, visible) '})
   }
-  
   visible = visible === 'true' || visible === true
 
   // Normalize price to 2 decimal places
@@ -99,7 +98,7 @@ export const createProduct = async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Failed to create product' });
-  }
+  } 
 };
 
 // PUT /products/:id - Update an existing product

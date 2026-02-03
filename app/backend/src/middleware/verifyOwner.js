@@ -19,7 +19,7 @@ const verifyOwner = async (req, res, next) => {
         const user = await prisma.user.findUnique({ where: { id: decoded.userId }})
 
         // Verify the user id is valid and the user is an Owner
-        if(!user || user.role !== 'Owner'){
+        if(!user || user.role !== 'Admin'){
             return res.status(401).json({ error: 'Invalid authentication token' });
         }
 

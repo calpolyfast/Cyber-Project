@@ -18,6 +18,7 @@ model User {
   email       String  @unique
   password    String
   role        Role    @default(User)  
+  orders      Order[]
 }
 
 model VulnerabilityGroup{
@@ -43,9 +44,29 @@ model ImageField {
 }
 
 model Product {
-  id      Int       @id @default(autoincrement())
-  name    String
-  price   Decimal   @db.Decimal(10, 2)
-  image   ImageField?
-  visible Boolean   @default(true)
+  id          Int       @id @default(autoincrement())
+  name        String
+  price       Decimal   @db.Decimal(10, 2)
+  image       ImageField?
+  visible     Boolean   @default(true)
+  orderItems  OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  orderId   Int
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  @@unique([orderId, productId])
+}
+
+model Order {
+  id          Int   @id @default(autoincrement())
+  orderItems  OrderItem[]
+  customerId  Int
+  customer    User @relation(fields: [customerId], references: [id])
+  totalPrice  Decimal @db.Decimal(10, 2)
+  createdAt   DateTime    @default(now())
 }
