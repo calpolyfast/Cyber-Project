@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-
-export const loginController = async (req, res) => {
-
-}
-
-export const registerController = async (req, res) => {
-    
-=======
 import jwt from "jsonwebtoken"
 import prisma from "../config/db.js"
 
@@ -68,5 +59,4 @@ export const loginController = async (req, res) => {
       console.error(err)
       res.status(500).json({ error: "Failed to authenticate user" })
     }
->>>>>>> b2dd9d5e86cbfd583cdfb72d662000192ff3cbbf
 }

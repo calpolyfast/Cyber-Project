@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-export const getAllProducts = async (req, res) => {
-
-}
-
-export const getProductById = async (req, res) => {
-
-}
-
-export const createProduct = async (req, res) => {
-
-}
-
-export const deleteProduct = async (req, res) => {
-    
-}
-=======
 import prisma from "../config/db.js";
 import cloudinary from "../utils/cloudinary.js";
 
@@ -184,4 +167,3 @@ export const deleteProduct = async (req, res) => {
 };
 
 
->>>>>>> b2dd9d5e86cbfd583cdfb72d662000192ff3cbbf
