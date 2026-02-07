@@ -1,87 +1,156 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import ContentWrapper from "../components/ContentWrapper"
 import { getOrders } from "../api/orders.mjs"
+import { CartContext } from "../components/CartContext"
 
 const CartEmpty = () => {
     return <div>Your shopping cart is empty!</div>
 }
 
-const OrderList = ({ items }) => {
+const OrderEntry = ({ cartObject, updateItems }) => {
+    const [ quantity, setQuantity ] = useState(cartObject.quantity)
+    const { MAX_QUANTITY, updateCartItemQuantity } = useContext(CartContext)
+
+    const inputRef = useRef()
+
+    const increaseQuantity = () => {
+        if (quantity + 1 <= MAX_QUANTITY)
+        {
+            inputRef.current.value = quantity + 1
+            setQuantity((val) => {return val + 1})
+
+            updateCartItemQuantity(cartObject.item.id, quantity + 1)
+        }
+        updateItems()
+    }
+
+    const decreaseQuantity = () => {
+        if (quantity > 1)
+        {
+            inputRef.current.value = quantity - 1
+            setQuantity((val) => {return val - 1})
+            updateCartItemQuantity(cartObject.item.id, quantity - 1)
+        }
+        updateItems()
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key == 'Enter')
+        {
+            handleSubmit()
+        }
+    }
+
+    const handleSubmit = () => {
+        const inputToInt = parseInt(quantity);
+        inputRef.current.blur()
+
+        if (Number.isNaN(inputToInt) || inputToInt < 1)
+        {
+            setQuantity(1)
+            inputRef.current.value = 1
+            updateCartItemQuantity(cartObject.item.id, 1)
+            return
+        }
+
+        if (inputToInt > MAX_QUANTITY)
+        {
+            setQuantity(MAX_QUANTITY)
+            inputRef.current.value = MAX_QUANTITY
+            updateCartItemQuantity(cartObject.item.id, MAX_QUANTITY)
+            return
+        }
+
+        setQuantity(inputToInt)
+        updateCartItemQuantity(cartObject.item.id, inputToInt)
+        updateItems()
+    }
+
+    useEffect(() => {
+        inputRef.current.value = quantity
+    }, [])
+
+    return <li className="flex flex-row gap-1">
+            <img src={cartObject.item.image} className="flex-2"></img>
+            <div className="flex-2 text-xl text-center align-bottom">
+                <h1 className="text-2xl">{cartObject.item.name}</h1>
+                <p>{"$" + cartObject.item.price}</p>
+            </div>
+            <div className="flex-1">
+                <div className="flex flex-row items-center justify-between gap-2 p-2">
+                    <button className="text-4xl" onClick={decreaseQuantity}>{"<"}</button>
+                    <input className="text-xl w-full text-center min-w-4" ref={inputRef} onKeyDown={handleKeyDown} onBlur={() => {handleSubmit()}} onChange={(e) => {setQuantity(e.target.value)}} />
+                    <button className="text-4xl" onClick={increaseQuantity}>{">"}</button>
+                </div>
+            </div>
+        </li>
+}
+
+const OrderList = ({ cart, updateItems }) => {
     return <div className="flex flex-3 flex-col p-2 bg-primary text-white">
         <h2 className="text-4xl text-center">Your Items</h2>
-        <ol>
-            {items.map((item, index) => {
-                return <li className="flex flex-row gap-1">
-                    <img src={item.image} className="flex-2"></img>
-                    <div className="flex-2 text-xl text-center align-bottom">
-                        <h1 className="text-2xl">{item.name}</h1>
-                        <p>{"$" + item.price}</p>
-                    </div>
-                    <div className="flex-1">
-                        <div className="flex flex-row items-center justify-between gap-2 p-2">
-                            <button className="text-4xl">{"<"}</button>
-                            <div className="text-xl">{"Quantity: " + item.quantity}</div>
-                            <button className="text-4xl">{">"}</button>
-                        </div>
-                    </div>
-                </li>
+        <ol className="flex flex-col gap-2">
+            {cart.map((cartObject, index) => {
+                return <OrderEntry key={index} cartObject={cartObject} updateItems={updateItems}></OrderEntry>
             })}
         </ol>
     </div>
 }
 
-const OrderSummary = ({ items }) => {
-    const total = items.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+const OrderSummary = ({ cart, total }) => {
+    const handlePlaceOrder = () => {
+        const order = {
+            orderItems: cart.map(cartObject => cartObject.item), 
+            totalPrice: total
+        }
+        // TODO: Place order here, then navigate to order placement page
+        console.log(order)
+    }
 
     return <div className="flex flex-1 flex-col p-2 justify-between h-[80lvh] bg-primary text-white">
         <div>
             <h2 className="text-2xl text-center">Order Summary</h2>
-            <ol>
-                {items.map((item, index) => {
-                    return <li>{item.quantity + " " + item.name + " - $" + item.price * item.quantity}</li>
+            <ol className="flex flex-col gap-1" >
+                {cart.map((cartObject, index) => {
+                    return <li key={index}>{cartObject.quantity + " \"" + cartObject.item.name + "\" - $" + (cartObject.item.price * cartObject.quantity).toFixed(2)}</li>
                 })}
             </ol>
         </div>
         <div>
             <div className="text-center text-2xl p-2">
-                {"Total: $" + total}
+                {"Total: $" + total.toFixed(2)}
             </div>
-            <button className="bg-primary-light p-2 text-3xl w-full">Place Order</button>
+            <button onClick={handlePlaceOrder} className="bg-primary-light p-2 text-3xl w-full">Place Order</button>
         </div>
     </div>
 }
 
 const Cart = () => {
-    const [ items, setItems ] = useState([
-        {
-            name: "Apple", 
-            quantity: 3,
-            price: 10.99, 
-            image: null
-        }, 
-        {
-            name: "Apple2", 
-            quantity: 2,
-            price: 9.1, 
-            image: null
-        }, 
-        {
-            name: "Apple3", 
-            quantity: 1,
-            price: 1, 
-            image: null
-        }
-    ])
+    const { getCart } = useContext(CartContext)
+    const [ items, setItems ] = useState([])
+    const [ total, setTotal ] = useState(0)
+
+    const updateTotal = () => {
+        setTotal(items.reduce((acc, curr) => acc + curr.item.price * curr.quantity, 0))
+    }
+
+    const updateItems = () => {
+        setItems(getCart())
+    }
 
     useEffect(() => {
-        // getOrders here
+        updateItems()
     }, [])
+
+    useEffect(() => {
+        updateTotal()
+    }, [items])
 
     return <ContentWrapper>
         <h1 className="text-4xl text-center border-b font-bold">Shopping Cart</h1>
         <div className="flex flex-row gap-2">
-            <OrderList items={items}></OrderList>
-            <OrderSummary items={items}></OrderSummary>
+            <OrderList total={total} cart={items} updateItems={updateItems}></OrderList>
+            <OrderSummary total={total} cart={items}></OrderSummary>
         </div>
     </ContentWrapper>
 }
