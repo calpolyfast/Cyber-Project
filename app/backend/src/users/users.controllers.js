@@ -53,10 +53,24 @@ export const loginController = async (req, res) => {
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
         expiresIn: '1h',
       });
+
+      res.cookie('token', token, {
+        httpOnly: true,        // JS can't access
+        secure: false,          // HTTPS only (set false for local dev)
+        sameSite: 'lax',    // use 'strict' for actual CSRF protection
+        maxAge: 60 * 60 * 1000 // 1 hour
+      })
+
+      // I included the token in the request body to leave potential for other vulnerabilities
       res.status(200).json({ token })
     }
     catch(err){
       console.error(err)
       res.status(500).json({ error: "Failed to authenticate user" })
     }
+}
+
+export const logoutController = async (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'User logged out' });
 }
