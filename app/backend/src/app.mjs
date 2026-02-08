@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import prisma from './config/db.js'
 import cors from 'cors'
 import options from './cors_options.js'
+import cookieParser from 'cookie-parser'
 
 import UserRouter from './users/users.routes.js'
 import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.routes.js'
@@ -17,6 +18,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 app.use(cors(options))
+app.use(cookieParser())
 
 app.use('/users', UserRouter)
 app.use('/products', ProductRouter)
