@@ -74,12 +74,20 @@ export const createOrderController = async (req, res) => {
 
 export const getUserOrdersController = async (req, res) => {
     try {
-        const orders = await prisma.user.findUnique({
+        const userOrders = await prisma.user.findUnique({
             where: { id: Number(req.userId) },
-            include: { orders: { include: { orderItems: { include: { product: true } } } } }
+            select: {
+                orders: {
+                    include: {
+                        orderItems: { include: { product: true } }
+                    }
+                }
+            }
         })
-        return res.status(200).json({ data: orders })
+        
+        return res.status(200).json({ orders: userOrders.orders })
     } catch(err) {
+        console.log(err)
         return res.status(500).json({ error: 'Server Error' })
     }
 }

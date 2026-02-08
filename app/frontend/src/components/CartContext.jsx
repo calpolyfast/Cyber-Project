@@ -33,6 +33,8 @@ export const CartProvider = ({ children }) => {
     const removeFromCart = (id) => {
         const sessionCart = getCart()
 
+        delete sessionCart[sessionCart.findIndex(cartObject => cartObject.item.id == id)]
+
         sessionStorage.setItem("cart", JSON.stringify(sessionCart.filter(cartObject => cartObject.item.id != id)))
     }
 

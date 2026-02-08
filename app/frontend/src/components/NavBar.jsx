@@ -8,6 +8,7 @@ const NavBar = () => {
         <ul className="flex flex-row gap-4">
             <a href="/about">About Us</a>
             <a href="/shopping-cart">Cart</a>
+            <a href="/orders">Orders</a>
             <a href="/account">Account</a>
         </ul>
     </nav>

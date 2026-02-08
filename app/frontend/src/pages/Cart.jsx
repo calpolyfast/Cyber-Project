@@ -1,7 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import ContentWrapper from "../components/ContentWrapper"
-import { getOrders } from "../api/orders.mjs"
+import { getOrders, placeOrder } from "../api/orders.mjs"
 import { CartContext } from "../components/CartContext"
+import { useNavigate } from "react-router-dom"
 
 const CartEmpty = () => {
     return <div>Your shopping cart is empty!</div>
@@ -9,7 +10,7 @@ const CartEmpty = () => {
 
 const OrderEntry = ({ cartObject, updateItems }) => {
     const [ quantity, setQuantity ] = useState(cartObject.quantity)
-    const { MAX_QUANTITY, updateCartItemQuantity } = useContext(CartContext)
+    const { MAX_QUANTITY, updateCartItemQuantity, removeFromCart } = useContext(CartContext)
 
     const inputRef = useRef()
 
@@ -66,6 +67,11 @@ const OrderEntry = ({ cartObject, updateItems }) => {
         updateItems()
     }
 
+    const handleDeleteItem = () => {
+        removeFromCart(cartObject.item.id)
+        updateItems()
+    }
+
     useEffect(() => {
         inputRef.current.value = quantity
     }, [])
@@ -83,6 +89,17 @@ const OrderEntry = ({ cartObject, updateItems }) => {
                     <button className="text-4xl" onClick={increaseQuantity}>{">"}</button>
                 </div>
             </div>
+            <div className="flex flex-1 items-center justify-center">
+                <button className="aspect-square size-16 rounded-lg text-2xl hover:text-white text-red-600" onClick={handleDeleteItem}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%" aria-label="Delete" role="img">
+                    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M9 9l6 6" />
+                        <path d="M15 9l-6 6" />
+                    </g>
+                </svg>
+                </button>
+            </div>
         </li>
 }
 
@@ -98,13 +115,17 @@ const OrderList = ({ cart, updateItems }) => {
 }
 
 const OrderSummary = ({ cart, total }) => {
+    const navigate = useNavigate()
+
     const handlePlaceOrder = () => {
         const order = {
-            orderItems: cart.map(cartObject => cartObject.item), 
+            orderItems: cart.map(cartObject => {return { productId: cartObject.item.id, quantity: cartObject.quantity }}), 
             totalPrice: total
         }
-        // TODO: Place order here, then navigate to order placement page
-        console.log(order)
+
+        navigate("/orders")
+        placeOrder(order)
+        
     }
 
     return <div className="flex flex-1 flex-col p-2 justify-between h-[80lvh] bg-primary text-white">

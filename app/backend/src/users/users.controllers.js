@@ -53,7 +53,7 @@ export const loginController = async (req, res) => {
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
         expiresIn: '1h',
       });
-      res.status(200).json({ token })
+      res.status(200).json({ id: user.id, token })
     }
     catch(err){
       console.error(err)

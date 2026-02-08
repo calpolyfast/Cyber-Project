@@ -10,6 +10,7 @@ import Account from "./pages/Account"
 import ProtectedRoute from "./components/ProtectedRoute"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
+import Orders from "./pages/Orders"
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
                             <About />
                         } />
                         <Route path={"/shopping-cart"} element={
-                            <Cart />
+                            <ProtectedRoute><Cart /></ProtectedRoute>
                         } />
                         <Route path={"/admin"} element={
                             <Admin />
@@ -39,6 +40,9 @@ function App() {
                         } />
                         <Route path={"/account"} element={
                             <ProtectedRoute><Account /></ProtectedRoute>
+                        } />
+                        <Route path={"/orders"} element={
+                            <ProtectedRoute><Orders /></ProtectedRoute>
                         } />
                     </Routes>
                 </div>
