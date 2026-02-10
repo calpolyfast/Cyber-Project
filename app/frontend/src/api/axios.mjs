@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getStoredUser, removeStoredUser, storeUser } from './auth.mjs';
+axios.defaults.withCredentials = true
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL
@@ -22,5 +23,7 @@ api.interceptors.response.use(
         return Promise.reject(error)
     }
 )
+
+api.interceptors.request
 
 export default api;

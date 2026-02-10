@@ -90,7 +90,7 @@ const OrderEntry = ({ cartObject, updateItems }) => {
                 </div>
             </div>
             <div className="flex flex-1 items-center justify-center">
-                <button className="aspect-square size-16 rounded-lg text-2xl hover:text-white text-red-600" onClick={handleDeleteItem}>
+                <button className="aspect-square size-10 rounded-lg text-2xl hover:text-white text-red-600" onClick={handleDeleteItem}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%" aria-label="Delete" role="img">
                     <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                         <circle cx="12" cy="12" r="9" />

@@ -27,7 +27,7 @@ function App() {
                             <About />
                         } />
                         <Route path={"/shopping-cart"} element={
-                            <ProtectedRoute><Cart /></ProtectedRoute>
+                            <Cart />
                         } />
                         <Route path={"/admin"} element={
                             <Admin />

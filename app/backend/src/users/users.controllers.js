@@ -62,7 +62,7 @@ export const loginController = async (req, res) => {
       })
 
       // I included the token in the request body to leave potential for other vulnerabilities
-      res.status(200).json({ token })
+      res.status(200).json({ id: user.id, token })
     }
     catch(err){
       console.error(err)
