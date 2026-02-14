@@ -1,59 +1,96 @@
-import { useEffect, useState } from "react";
-import { createContext } from "react";
+import { createContext, useEffect, useState, useMemo } from "react";
 
-export const CartContext = createContext([])
+export const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
-    const MAX_QUANTITY = 50
+    const MAX_QUANTITY = 50;
 
-    const getCart = () => {
-        return JSON.parse(sessionStorage.getItem("cart"))
-    }
-
-    const addToCart = (item, quantity) => {
-        const sessionCart = getCart()
-
-        const toAdd = {
-            item: item,
-            quantity: quantity, 
-        }
-
-        if (sessionCart.some(cartObject => cartObject.item.id == item.id))
-        {
-            sessionCart[sessionCart.findIndex(cartObject => cartObject.item.id == item.id)].quantity++
-        }
-        else
-        {
-            sessionCart.push(toAdd)
-        }
-        
-        sessionStorage.setItem("cart", JSON.stringify(sessionCart))
-    }
-
-    const removeFromCart = (id) => {
-        const sessionCart = getCart()
-
-        delete sessionCart[sessionCart.findIndex(cartObject => cartObject.item.id == id)]
-
-        sessionStorage.setItem("cart", JSON.stringify(sessionCart.filter(cartObject => cartObject.item.id != id)))
-    }
-
-    const updateCartItemQuantity = (id, quantity) => {
-        const sessionCart = getCart()
-
-        sessionCart[sessionCart.findIndex(cartObject => cartObject.item.id == id)].quantity = quantity
-        
-        sessionStorage.setItem("cart", JSON.stringify(sessionCart))
-    }
+    const [cart, setCart] = useState(() => {
+        const stored = sessionStorage.getItem("cart");
+        return stored ? JSON.parse(stored) : [];
+    });
+    const [showCart, setShowCart] = useState(false);
 
     useEffect(() => {
-        if (!sessionStorage.getItem("cart"))
-        {
-            sessionStorage.setItem("cart", JSON.stringify([]))
-        }
-    }, [])
+        sessionStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart]);
 
-    return <CartContext.Provider value={{ getCart, addToCart, removeFromCart, updateCartItemQuantity, MAX_QUANTITY }}>
-        {children}
-    </CartContext.Provider>
-}
+    const addToCart = (item, quantity) => {
+        setCart(prevCart => {
+            const existingIndex = prevCart.findIndex(
+                c => c.item.id === item.id
+            );
+
+            if (existingIndex !== -1) {
+                const updated = [...prevCart];
+                updated[existingIndex] = {
+                    ...updated[existingIndex],
+                    quantity: Math.min(
+                        updated[existingIndex].quantity + quantity,
+                        MAX_QUANTITY
+                    )
+                };
+                return updated;
+            }
+
+            return [...prevCart, { item, quantity }];
+        });
+        setShowCart(true)
+    };
+
+    const removeFromCart = (id) => {
+        setCart(prevCart =>
+            prevCart.filter(c => c.item.id !== id)
+        );
+        setShowCart(true)
+    };
+
+    const updateCartItemQuantity = (id, quantity) => {
+        setCart(prevCart =>
+            prevCart.map(c =>
+                c.item.id === id
+                    ? { ...c, quantity: Math.min(quantity, MAX_QUANTITY) }
+                    : c
+            )
+        );
+        setShowCart(true)
+    };
+
+    const clearCart = () => {
+        setCart([]);
+    };
+
+    const getCartItem = (id) => {
+        return cart.find(c => c.item.id === id);
+    };
+
+    const totalItems = useMemo(() => {
+        return cart.reduce((sum, c) => sum + c.quantity, 0);
+    }, [cart]);
+
+    const totalPrice = useMemo(() => {
+        return cart.reduce((sum, c) => {
+            return sum + c.item.price * c.quantity;
+        }, 0);
+    }, [cart]);
+
+    return (
+        <CartContext.Provider
+            value={{
+                cart,
+                showCart,
+                totalItems,
+                totalPrice,
+                MAX_QUANTITY,
+                addToCart,
+                removeFromCart,
+                updateCartItemQuantity,
+                clearCart,
+                getCartItem,
+                setShowCart
+            }}
+        >
+            {children}
+        </CartContext.Provider>
+    );
+};

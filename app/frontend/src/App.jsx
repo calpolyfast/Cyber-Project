@@ -17,8 +17,8 @@ function App() {
     <Router>
         <AuthProvider>
             <CartProvider>
-                <NavBar></NavBar>
-                <div className="flex flex-col mx-8 md:mx-32">
+                <main className="full-screen">
+                    <NavBar></NavBar>
                     <Routes>
                         <Route index element={
                             <Home />
@@ -45,7 +45,7 @@ function App() {
                             <ProtectedRoute><Orders /></ProtectedRoute>
                         } />
                     </Routes>
-                </div>
+                </main>
             </CartProvider>
         </AuthProvider>
     </Router>

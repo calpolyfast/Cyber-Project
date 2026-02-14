@@ -45,12 +45,14 @@ const Orders = () => {
             })
     }, [])
 
-    return <ContentWrapper>
-        <h1 className="text-4xl text-center border-b font-bold">Your Orders</h1>
-        <div className="flex flex-row gap-2">
-            <OrderList orders={orders}/>
-        </div>
-    </ContentWrapper>
+    return <div className="page-wrapper">
+        <ContentWrapper>
+            <h1 className="text-4xl text-center border-b font-bold">Your Orders</h1>
+            <div className="flex flex-row gap-2">
+                <OrderList orders={orders}/>
+            </div>
+        </ContentWrapper>
+    </div>
 }
 
 export default Orders
