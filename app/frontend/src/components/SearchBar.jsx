@@ -9,7 +9,14 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
     useEffect(() => {
         getProducts()
             .then(({ data }) => {
-                setProducts(data)
+                if (!Array.isArray(data))
+                {
+                    throw "getProducts failed to fetch from /api/products. Is the API url correct?"
+                }
+                setProducts(res.data)
+            })
+            .catch((reason) => {
+                console.error(reason)
             })
     }, [])
     
