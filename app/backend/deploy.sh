@@ -1,5 +1,7 @@
-export INSTANCE_ID="test-id"
+export INSTANCE_ID="test-2-id"
 export BASE_DOMAIN="localhost"
 export APP_IMAGE="backend-app:latest"
 
-echo (envsubst < chamber.yaml.tmpl) # envsubst < chamber.yaml.tmpl | kubectl apply -f -
+envsubst < chamber.yaml | kubectl apply -f -
+kubectl apply -f traefik.yaml
+kubectl apply -f rbac-traefik-endpointslices.yaml
