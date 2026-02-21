@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: chamber-${INSTANCE_ID}
+    labels:
+        app: chamber
+        instance: ${INSTANCE_ID}
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: chamber
+            instance: ${INSTANCE_ID}
+    template:
+        metadata:
+            labels:
+                app: chamber
+                instance: ${INSTANCE_ID}
+        spec:
+            volumes:
+                - name: pgdata
+                  emptyDir: {}
+            containers:
+                - name: postgres
+                  image: postgres:latest
+                  ports:
+                      - containerPort: 5432
+                  env:
+                      - name: POSTGRES_USER
+                        value: postgres
+                      - name: POSTGRES_PASSWORD
+                        value: postgres
+                      - name: POSTGRES_DB
+                        value: devdb
+                  volumeMounts:
+                      - name: pgdata
+                        mountPath: /var/lib/postgresql/data
+
+                - name: app
+                  image: ${APP_IMAGE}
+                  ports:
+                      - containerPort: 3000
+                  env:
+                      # app connects to postgres in the same Pod
+                      - name: DATABASE_HOST
+                        value: 127.0.0.1
+                      - name: DATABASE_PORT
+                        value: "5432"
+                      - name: DATABASE_USER
+                        value: postgres
+                      - name: DATABASE_PASSWORD
+                        value: postgres
+                      - name: DATABASE_NAME
+                        value: devdb
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: chamber-${INSTANCE_ID}
+    labels:
+        app: chamber
+        instance: ${INSTANCE_ID}
+spec:
+    selector:
+        app: chamber
+        instance: ${INSTANCE_ID}
+    ports:
+        - name: http
+          port: 80
+          targetPort: 3000
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+    name: chamber-${INSTANCE_ID}
+    labels:
+        app: chamber
+        instance: ${INSTANCE_ID}
+spec:
+    entryPoints:
+        - web
+    routes:
+        - match: Host(`${INSTANCE_ID}.${BASE_DOMAIN}`)
+          kind: Rule
+          services:
+              - name: chamber-${INSTANCE_ID}
+                port: 80
