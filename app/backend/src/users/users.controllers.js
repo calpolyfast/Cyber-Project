@@ -40,10 +40,15 @@ export const loginController = async (req, res) => {
           .json({ error: "Username, email, and password are required for user authentication" });
       }
   
-      // Check if user with provided credentials exists
-      const user = await prisma.user.findUnique({
-        where: { username }
-      })
+      // Use unsafe raw query to allow for potential SQL injection vulnerability
+      const users = await prisma.$queryRawUnsafe(`
+        SELECT *
+        FROM "User"
+        WHERE username = '${username}'
+      `)
+
+      // Verify the user was found and password matches
+      const user = users[0]
       if (!user || user.password !== password) {
         return res.status(401).json({ error: "Invalid username or password" })
       }
