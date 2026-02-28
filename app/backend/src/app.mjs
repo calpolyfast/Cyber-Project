@@ -17,16 +17,16 @@ const port = process.env.PORT || 3000;
 app.use(express.json())
 app.use(cors(options))
 
-app.use('/users', UserRouter)
-app.use('/products', ProductRouter)
-app.use('/vulnerability-groups', VulnerabilityGroupRouter)
-app.use('/vulnerabilities', VulnerabilityRouter)
+app.use('/api/users', UserRouter)
+app.use('/api/products', ProductRouter)
+app.use('/api/vulnerability-groups', VulnerabilityGroupRouter)
+app.use('/api/vulnerabilities', VulnerabilityRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/db-test', async (req, res) => {
+app.get('/api/db-test', async (req, res) => {
   try {
     const users = await prisma.user.findMany()
     res.json(users)
