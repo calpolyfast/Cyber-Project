@@ -3,7 +3,7 @@ import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
 import { getProducts, searchProduct } from '../api/products.mjs';
 import SearchBar from '../components/SearchBar';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ContentWrapper from '../components/ContentWrapper';
 import { CartContext } from '../components/CartContext';
 
@@ -85,7 +85,9 @@ const ProductListing = ({ item }) => {
     return <div className="flex flex-col justify-between rounded-lg gap-4 p-2 bg-white shadow-xl">
         <div>
             <div className="flex flex-col gap-1 m-1 font-sans">
-                <h2 className="text-2xl font-bold">{item.name}</h2>
+                <Link to={`/product/${item.id}`}>
+                    <h2 className="text-2xl font-bold hover:underline hover:text-primary">{item.name}</h2>
+                </Link>
                 <p>{item.description}</p>
                 <div>
                     <p className="text-2xl font-bold">{"$" + Number(item.price).toFixed(2)}</p>

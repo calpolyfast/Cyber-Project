@@ -54,7 +54,7 @@ export const createReview = async (req, res) => {
         })
         const fullReview = await prisma.review.findUnique({
             where: { id: review.id },
-            include: { product: true} 
+            include: { product: true, user: true } 
         })
 
         return res.status(201).json(fullReview)

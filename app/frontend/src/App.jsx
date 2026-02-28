@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
 import Orders from "./pages/Orders"
+import Product from "./pages/Product"
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
                     <Routes>
                         <Route index element={
                             <Home />
+                        } />
+                        <Route path={"/product/:productId"} element={
+                            <Product />
                         } />
                         <Route path={"/about"} element={
                             <About />
