@@ -15,6 +15,9 @@ dist
 dist-ssr
 *.local
 
+# Ignore migrations for now
+prisma/migrations/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

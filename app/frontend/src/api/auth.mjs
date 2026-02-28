@@ -1,11 +1,15 @@
 import api from "./axios.mjs";
 
-export const getStoredToken = () => {
-    return localStorage.getItem("token")
+export const getStoredUser = () => {
+    return JSON.parse(localStorage.getItem("userdata"))
 }
 
-export const storeToken = (token) => {
-    localStorage.setItem("token", token)
+export const storeUser = (id, token) => {
+    localStorage.setItem("userdata", JSON.stringify({ id, token }))
+}
+
+export const removeStoredUser = () => {
+    localStorage.removeItem("userdata")
 }
 
 export const postLogin = (username, password) => {

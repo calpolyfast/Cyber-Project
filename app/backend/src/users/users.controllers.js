@@ -40,10 +40,15 @@ export const loginController = async (req, res) => {
           .json({ error: "Username, email, and password are required for user authentication" });
       }
   
-      // Check if user with provided credentials exists
-      const user = await prisma.user.findUnique({
-        where: { username }
-      })
+      // Use unsafe raw query to allow for potential SQL injection vulnerability
+      const users = await prisma.$queryRawUnsafe(`
+        SELECT *
+        FROM "User"
+        WHERE username = '${username}'
+      `)
+
+      // Verify the user was found and password matches
+      const user = users[0]
       if (!user || user.password !== password) {
         return res.status(401).json({ error: "Invalid username or password" })
       }
@@ -53,10 +58,24 @@ export const loginController = async (req, res) => {
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
         expiresIn: '1h',
       });
-      res.status(200).json({ token })
+
+      res.cookie('token', token, {
+        httpOnly: true,        // JS can't access
+        secure: false,          // HTTPS only (set false for local dev)
+        sameSite: 'lax',    // use 'strict' for actual CSRF protection
+        maxAge: 60 * 60 * 1000 // 1 hour
+      })
+
+      // I included the token in the request body to leave potential for other vulnerabilities
+      res.status(200).json({ id: user.id, token })
     }
     catch(err){
       console.error(err)
       res.status(500).json({ error: "Failed to authenticate user" })
     }
+}
+
+export const logoutController = async (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'User logged out' });
 }

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { createContext } from "react";
-import { getStoredToken, postLogin, postRegister, storeToken } from "../api/auth.mjs";
+import { getStoredUser, postLogin, postRegister, storeUser } from "../api/auth.mjs";
 
 export const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
-    const [ token, setToken ] = useState()
+    const [ user, setUser ] = useState({})
     const [ isAuthenticated, setIsAuthenticated ] = useState(false)
     const [ loaded, setLoaded ] = useState(false)
 
@@ -18,11 +18,13 @@ export const AuthProvider = ({ children }) => {
                 setIsAuthenticated(true)
             }
 
-            setToken(res.data?.token)
+            const newUser = { id: res.data?.id, token: res.data?.token }
+
+            setUser(newUser)
             
             // Store token in localStorage - Token exfiltration via XSS vulnerability
-            storeToken(res.data?.token)
-            return res.data?.token
+            storeUser(res.data?.id, res.data?.token)
+            return newUser
 
         } catch (error) {
             console.error("Login failed: ", error);
@@ -30,7 +32,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = () => {
-        setToken()
+        setIsAuthenticated(false)
+        setUser({})
     }
 
     const register = async (username, email, password) => {
@@ -46,16 +49,17 @@ export const AuthProvider = ({ children }) => {
 
     // Effect that checks if the user is authenticated 
     useEffect(() => {
-        const token = getStoredToken()
+        const storedUser = getStoredUser()
         
-        if (token != null)
+        if (storedUser?.token != null)
         {
-            setToken(token)
+            setUser(storedUser)
+            setIsAuthenticated(true)
         }
         setLoaded(true)
     }, [])
 
-    return <AuthContext.Provider value={{ login, logout, register, token, loaded, isAuthenticated }}>
+    return <AuthContext.Provider value={{ login, logout, register, user, loaded, isAuthenticated }}>
         {children}
     </AuthContext.Provider>
 }

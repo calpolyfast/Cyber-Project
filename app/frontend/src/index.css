@@ -5,8 +5,27 @@
     --color-secondary: #9AA845;
     --color-dark: #332721;
     --color-primary-light: #B28964;
+    --color-bg: #f2dac0;
 }
 
 :root {
     font-family: "Cherry Cream Soda", system-ui;
+}
+
+.full-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    padding: 40px;
+    width: 100%;
+    background-color: var(--color-bg);
+    overflow-y: auto;
 }
