@@ -10,6 +10,7 @@ import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 import ProductRouter from './products/products.routes.js';
 import OrderRouter from './orders/orders.routes.js'
+import ReviewRouter from './reviews/review.routes.js'
 
 import { populateUsersAndProducts, populateOrdersForUser } from '../scripts/populateDB.js'
 
@@ -27,6 +28,7 @@ app.use('/products', ProductRouter)
 app.use('/orders', OrderRouter)
 app.use('/vulnerability-groups', VulnerabilityGroupRouter)
 app.use('/vulnerabilities', VulnerabilityRouter)
+app.use('/reviews', ReviewRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

@@ -67,7 +67,6 @@ export const createOrderController = async (req, res) => {
             data: fullOrder
         })
     } catch(err) {
-        console.log(err)
         return res.status(500).json({ error: 'Server Error' })
     }
 }

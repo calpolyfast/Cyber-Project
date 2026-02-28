@@ -105,8 +105,6 @@ export const populateUsersAndProducts = async () => {
             numOfProductsCreated += 1
         }
     })
-
-    console.log(`Database populated with ${numOfProductsCreated} new products`)
 }
 
 // This function is used to populate the orders table with some orders for a given user
