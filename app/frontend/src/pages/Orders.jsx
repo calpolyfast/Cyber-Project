@@ -5,7 +5,7 @@ import { CartContext } from "../components/CartContext"
 import { AuthContext } from "../components/AuthContext"
 
 const CartEmpty = () => {
-    return <div>Your shopping cart is empty!</div>
+    return <div className="text-center">You haven't ordered anything yet!</div>
 }
 
 const OrderEntry = ({ order }) => {
@@ -19,16 +19,16 @@ const OrderEntry = ({ order }) => {
 }
 
 const OrderList = ({ orders }) => {
-    return <div className="flex flex-3 flex-col p-2 bg-primary text-white">
-        <div className="flex flex-row gap-1">
+    return <div className="flex flex-3 flex-col p-2 bg-bg text-dark">
+        <div className="flex flex-row gap-1 border-b">
             <div className="flex-1" >{"Order ID"}</div>
             <div className="flex-1" >{"Total"}</div>
             <div className="flex-1" >{"Date Placed"}</div>
         </div>
         <ol className="flex flex-col gap-2">
-            {orders.map((order, index) => {
+            {orders?.length > 0 ? orders.map((order, index) => {
                 return <OrderEntry key={index} order={order}></OrderEntry>
-            })}
+            }) : <CartEmpty />}
         </ol>
     </div>
 }
@@ -45,14 +45,12 @@ const Orders = () => {
             })
     }, [])
 
-    return <div className="page-wrapper">
-        <ContentWrapper>
-            <h1 className="text-4xl text-center border-b font-bold">Your Orders</h1>
+    return <ContentWrapper>
+            <h1 className="text-4xl bg-transparent text-dark text-center font-bold">Your Orders</h1>
             <div className="flex flex-row gap-2">
                 <OrderList orders={orders}/>
             </div>
         </ContentWrapper>
-    </div>
 }
 
 export default Orders

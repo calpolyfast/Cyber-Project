@@ -16,8 +16,8 @@ const Admin = () => {
     }
 
     return <ContentWrapper>
-        <h1 className="text-4xl text-center border-b font-bold">Administrator Dashboard</h1>
-        <div className="flex flex-col">
+        <h1 className="text-4xl text-center border-b font-bold text-dark shadow-2xl">Administrator Dashboard</h1>
+        <div className="flex flex-col bg-bg rounded-md">
             <div className="flex flex-col flex-1 gap-2 m-2">
                 <h1>Manage Items</h1>
                 <form className="flex flex-col gap-2 border-2 rounded-md p-2" onSubmit={handleNewProduct}>

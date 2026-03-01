@@ -139,18 +139,18 @@ const Home = () => {
             })
     }, [])
 
-    return <div className="page-wrapper">
-        <ContentWrapper>
-            <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
+    return <>
+    <ContentWrapper>
+            <h1 className="text-4xl text-center font-bold">For Sale</h1>
             <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
-            <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">{products.map((product, index) => {
+            <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{products.map((product, index) => {
                 return <ProductListing key={index} item={product}/>
             })}</div>
         </ContentWrapper>
-        <div className="absolute bottom-4 right-4">
+        <div className="absolute sm:bottom-4 bottom-24 right-4">
             <CartWidget />
         </div>
-    </div>
+    </>
 }
 
 export default Home

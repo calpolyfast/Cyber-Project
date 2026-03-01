@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
 import Orders from "./pages/Orders"
+import MobileNav from "./components/MobileNav"
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
                             <ProtectedRoute><Orders /></ProtectedRoute>
                         } />
                     </Routes>
+                    <MobileNav></MobileNav>
                 </main>
             </CartProvider>
         </AuthProvider>

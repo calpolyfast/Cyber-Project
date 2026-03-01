@@ -26,6 +26,7 @@ app.use('/api/users', UserRouter)
 app.use('/api/products', ProductRouter)
 app.use('/api/vulnerability-groups', VulnerabilityGroupRouter)
 app.use('/api/vulnerabilities', VulnerabilityRouter)
+app.use('/api/orders', OrderRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
