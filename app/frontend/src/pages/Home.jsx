@@ -10,6 +10,11 @@ import { CartContext } from '../components/CartContext';
 import shoppingCartIcon from '../svg/shoppingcart.svg';
 import CartWidget from '../components/CartWidget';
 
+const PlaceholderListing = () => {
+    return <div className="min-h-[448px] rounded-lg bg-white animate-pulse shadow-xl">
+    </div>
+}
+
 const ProductListing = ({ item }) => {
     const { addToCart, updateCartItemQuantity, getCartItem, MAX_QUANTITY } = useContext(CartContext)
     const [ quantity, setQuantity ] = useState(0)
@@ -100,11 +105,11 @@ const ProductListing = ({ item }) => {
         </div>
         <div className="flex flex-col items-center justify-center w-full h-full">
             <div className="flex flex-row items-center justify-between gap-2 p-2 w-full">
-                <button className="text-4xl" onClick={decreaseQuantity}>{"<"}</button>
+                <button className="text-4xl cursor-pointer" onClick={decreaseQuantity}>{"<"}</button>
                 <input className="text-xl w-full text-center" ref={inputRef} value={quantity} onKeyDown={handleKeyDown} onBlur={() => {handleSubmit()}} onChange={(e) => {setQuantity(e.target.value)}} />
-                <button className="text-4xl" onClick={increaseQuantity}>{">"}</button>
+                <button className="text-4xl cursor-pointer" onClick={increaseQuantity}>{">"}</button>
             </div>
-            <div className="w-[50%] h-[50%] max-w-10 max-h-10">
+            <div className="w-[50%] h-[50%] max-w-10 max-h-10 cursor-pointer">
                 <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2"
@@ -123,6 +128,7 @@ const Home = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [reflectedQuery, setReflectedQuery] = useState("");
     const [products, setProducts] = useState([]);
+    const [productsLoaded, setProductsLoaded] = useState(false)
     
     // {
     //     id: 0,
@@ -134,8 +140,9 @@ const Home = () => {
 
     useEffect(() => {
         getProducts()
-            .then(({ data }) => {
+            .then(async ({ data }) => {
                 setProducts(data)
+                setProductsLoaded(true)
             })
     }, [])
 
@@ -143,9 +150,13 @@ const Home = () => {
     <ContentWrapper>
             <h1 className="text-4xl text-center font-bold">For Sale</h1>
             <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
-            <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{products.map((product, index) => {
+            <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{
+            productsLoaded ?
+            products.map((product, index) => {
                 return <ProductListing key={index} item={product}/>
-            })}</div>
+            }) :
+            Array(8).fill(<PlaceholderListing />)
+            }</div>
         </ContentWrapper>
         <div className="absolute sm:bottom-4 bottom-24 right-4">
             <CartWidget />

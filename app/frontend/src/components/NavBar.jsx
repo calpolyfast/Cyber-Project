@@ -14,8 +14,8 @@ const NavBar = () => {
             <a href="/about">About Us</a>
             <a href="/shopping-cart">Cart</a>
             <a href="/orders">Orders</a>
-            <div className="flex bg-white rounded-lg p-2 min-w-35 justify-center">
-                <a href="/account">{isAuthenticated ? "Account" : "Sign In"}</a>
+            <div className={`${!loaded ? "animate-pulse" : ""} flex bg-white rounded-lg p-2 min-w-35 justify-center`}>
+                <a href="/account">{!loaded ? "..." : isAuthenticated ? "Account" : "Sign In"}</a>
             </div>
         </ul>
     </nav>
