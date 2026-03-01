@@ -30,7 +30,7 @@ function App() {
                             <Cart />
                         } />
                         <Route path={"/admin"} element={
-                            <Admin />
+                            <ProtectedRoute roles={["Admin"]}><Admin /></ProtectedRoute>
                         } />
                         <Route path={"/login"} element={
                             <Login />
