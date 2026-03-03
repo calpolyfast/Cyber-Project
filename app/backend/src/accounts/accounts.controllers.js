@@ -1,8 +1,9 @@
 import { json } from "express";
 
 export const getAllAccounts = async (req, res) => {
+    const {accounts} = req.body;
     try {
-        const accounts = await prisma.accounts.findMany();
+        accounts = await prisma.accounts.findMany();
         res.json(accounts);
         
     }
@@ -12,8 +13,9 @@ export const getAllAccounts = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
+    const {profile} = req.body;
     try {
-        const profile = await prisma.accounts.findUnique({
+        profile = await prisma.accounts.findUnique({
             where: { id: Number(id)} ,
             data: {email: String(email)},
             data: {password: String(password)}
@@ -25,9 +27,29 @@ export const getProfile = async (req, res) => {
     }
 };
 
-export const deleteAccount = async (req, res) => {
+export const updateAccount = async (req, res) => {
+    const {newAccount} = req.body;
     try {
-        const currentAccount = await prisma.accounts.findUnique({
+        newAccount = await prisma.accounts.update({
+            where: {
+                id: Number(id),
+                
+            },
+            data: {
+                email: String(email),
+                password: String(password)
+            }
+        })
+    }
+    catch (error) {
+        res.status(400).json({error: 'Profile not found.'})
+    }
+}
+
+export const deleteAccount = async (req, res) => {
+    const {currentAccount} = req.body;
+    try {
+            currentAccount = await prisma.accounts.findUnique({
             where: {id: Number(id)},
             data: {email: String(email)},
             data: {password: String(password)}

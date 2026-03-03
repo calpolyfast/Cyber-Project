@@ -9,8 +9,16 @@ export const getProfile = () => {
     })
 }
 
-export const updateAccount = (account) => {
+export const deleteAccount = (account) => {
     return axios.post(`${API_BASE_URL}/deleteAccount`, account);
+}
+
+export const updateProfile = (account) => {
+    return axios.get(`${API_BASE_URL}/updateAccount`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
 }
 
 
