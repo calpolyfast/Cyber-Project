@@ -3,9 +3,9 @@ import { getProducts, searchProduct } from "../api/products.mjs";
 import { IoMdClose, IoMdSearch } from "react-icons/io";
 
 const SearchBar = ({ query, setQuery, setProducts }) => {
-    const [input, setInput] = useState("")
 
     const decodedQuery = decodeURIComponent(query);
+    const [input, setInput] = useState(decodedQuery !== "null" ? decodedQuery : "")
 
     const clearSearch = () => {
         setQuery({})
@@ -40,12 +40,20 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
         });
 
         searchProduct(input).then(res => {
-            setProducts(res.data)
+            // If there is a flag, notify the user
+            // Otherwise, populate the products with the result data
+            const flag = res.data.flag
+            if (flag) {
+                alert(`Congratulations! You found the XSS flag. \n${flag} `)
+                setProducts([])
+            }
+            else {
+                setProducts(res.data)
+            }
         }).catch(err => {
             // TODO: Show err
             console.error(err)
         })
-        setInput("");
     }
 
     return <div className="flex flex-col-reverse gap-y-2 md:flex-row-reverse justify-between items-center w-full">

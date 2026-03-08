@@ -109,8 +109,8 @@ const ProductListing = ({ item }) => {
             <div className="w-[50%] h-[50%] max-w-10 max-h-10">
                 <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"
+                    fill="none" stroke="currentColor" strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round"
                     aria-hidden="true" focusable="false">
                     <circle cx="9" cy="20" r="1"/>
                     <circle cx="18" cy="20" r="1"/>
@@ -123,7 +123,6 @@ const ProductListing = ({ item }) => {
 
 const Home = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [reflectedQuery, setReflectedQuery] = useState("");
     const [products, setProducts] = useState([]);
     
     // {
@@ -134,17 +133,51 @@ const Home = () => {
     //     price: "$0.00"
     // }
 
+    // On initial render, decide whether to fetch all products
+    // or search by name
     useEffect(() => {
+        const decodedQuery = decodeURIComponent(searchParams.get("search"))
+
         getProducts()
-            .then(({ data }) => {
-                setProducts(data)
+                .then(({ data }) => {
+                    setProducts(data)
+                })
+
+        if (!decodedQuery) {
+            getProducts()
+                .then(({ data }) => {
+                    setProducts(data)
+                })
+        }
+        else {
+            searchProduct(decodedQuery).then(res => {
+                // If there is a flag, notify the user
+                // Otherwise, populate the products with the result data
+                const flag = res.data.flag
+                if (flag) {
+                    alert(`Congratulations! You found the XSS flag. \n ${flag} `)
+                    setProducts([])
+                }
+                else {
+                    setProducts(res.data)
+                }
+            }).catch(err => {
+                // TODO: Show err
+                console.error(err)
             })
+        }
+        
     }, [])
+
+    
 
     return <div className="page-wrapper">
         <ContentWrapper>
             <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
-            <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
+            <SearchBar 
+                query={searchParams.get("search")} setQuery={setSearchParams} 
+                setProducts={setProducts} 
+            />
             <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">{products.map((product, index) => {
                 return <ProductListing key={index} item={product}/>
             })}</div>

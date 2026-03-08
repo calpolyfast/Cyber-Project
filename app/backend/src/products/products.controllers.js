@@ -39,6 +39,13 @@ export const getProductBySearchName = async (req, res) => {
     if(!name) {
         return res.status(400).json({ error: "Missing search parameter: name" })
     }
+
+    // Manually check if there is a flag
+    const xssRegex = /<img[^>]*onerror\s*=\s*['"]?\s*alert\s*\(/i;
+    if (xssRegex.test(name)) {
+      return res.status(200).json({ flag: "flag{reflected_xss_in_search_parameter}" })
+    }
+    
     try {
         const products = await prisma.product.findMany({
             where: {
