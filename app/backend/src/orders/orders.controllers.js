@@ -19,6 +19,10 @@ export const createOrderController = async (req, res) => {
     // in the request body instead of verifying based on the order items
     const totalPrice = req.body.totalPrice
 
+    // However, we will still calculate the actual total price and compare it with the client-provided one
+    // If they don't match, it means the user found the vulnerability and we will return the flag
+    let actualTotalPrice = 0
+
     try {
         const order = await prisma.order.create({ data: {
             customerId: Number(req.userId),
@@ -41,6 +45,10 @@ export const createOrderController = async (req, res) => {
                     error: "Any item must correspond to a valid product"
                 })
             }
+            // Add the product * quantity to the actualTotalPrice
+            const product = await prisma.product.findFirst({
+                where: { id: Number(orderItem.productId)} })
+            actualTotalPrice += product.price * orderItem.quantity
             // Create the order item
             await prisma.orderItem.create({
                 data: {
@@ -62,6 +70,12 @@ export const createOrderController = async (req, res) => {
                 }
             }
         })
+
+        // Add the flag if the total prices don't match
+        // Note: Math.round() is used to round both numbers to 2 decimal places
+        if (Math.round(totalPrice * 100) / 100 !== Math.round(actualTotalPrice * 100) / 100) {
+            fullOrder["flag"] = "flag{client_side_order_manipulation}"
+        }
 
         return res.status(201).json({
             data: fullOrder
