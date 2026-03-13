@@ -7,6 +7,9 @@ export const getInvoiceByOrderId = async (req, res) => {
         const invoice = await prisma.invoice.findUnique({
             where: { orderId: Number(orderId) },
             select: { 
+                username: true,
+                email: true,
+                createdAt: true,
                 order: {
                     include: {
                         orderItems: {
