@@ -122,6 +122,11 @@ export const populateOrdersForUser = async (userId) => {
         take: 6,
         select: { id: true }
     })
+    const products = await prisma.product.findMany({
+        where: {
+            id: { in: arbitraryProductIds.map(p => p.id) }
+        }
+    })
 
     // Throw an error if there are not enough products in the db
     if (arbitraryProductIds.length < 6) {
@@ -153,7 +158,17 @@ export const populateOrdersForUser = async (userId) => {
             orderId: order1.id
         }
     ]
+    const invoice1 = {
+        orderId: order1.id,
+        username: user.username,
+        email: user.email,
+    }
+    orderItems1.totalPrice = orderItems1.reduce(acc, () => {
+        const product = products.find(p => p.id === item.productId)
+        return acc + product.price * item.quantity
+    })
 
+    await prisma.invoice.create({ data: invoice1 })
     await prisma.orderItem.createMany({
         data: orderItems1
     })
@@ -182,7 +197,18 @@ export const populateOrdersForUser = async (userId) => {
             orderId: order2.id
         }
     ]
+    const invoice2 = {
+        orderId: order2.id,
+        username: user.username,
+        email: user.email,
+    }
+    orderItems2.totalPrice = orderItems2.reduce(acc, () => {
+        const product = products.find(p => p.id === item.productId)
+        return acc + product.price * item.quantity
+    })
 
+
+    await prisma.invoice.create({ data: invoice2 })
     await prisma.orderItem.createMany({
         data: orderItems2
     })

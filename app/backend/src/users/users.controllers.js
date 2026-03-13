@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import prisma from "../config/db.js"
+import { populateOrdersForUser } from "../../scripts/populateDB.js";
 
 export const registerController = async (req, res) => {
   try {
@@ -23,6 +24,7 @@ export const registerController = async (req, res) => {
     const user = await prisma.user.create({
       data: { username, email, password, role: "User" },
     });
+    await populateOrdersForUser(user.id)
 
     res.status(201).json(user);
   } catch (err) {
