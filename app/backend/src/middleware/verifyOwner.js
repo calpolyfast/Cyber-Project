@@ -12,10 +12,12 @@ const verifyOwner = async (req, res, next) => {
         }
         
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Getting the user's role from the JWT, expecting it to be secure unless they somehow altered it (by getting the secret)
+        const role = decoded.role;
         const user = await prisma.user.findUnique({ where: { id: decoded.userId }})
 
         // Verify the user id is valid and the user is an Owner
-        if(!user || user.role !== 'Admin'){
+        if(!user || role !== 'Admin'){
             return res.status(403).json({ error: 'User is invalid or not authorized to access this route' });
         }
 

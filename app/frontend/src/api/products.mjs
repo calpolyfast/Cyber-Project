@@ -14,9 +14,9 @@ export const getProducts = () => {
 
 export const searchProduct = (searchQuery) => {
     // Fetch from the backend with search query
-    return api.get(`/search`, {
+    return api.get(`/products/search`, {
         params: {
-            query: searchQuery
+            name: searchQuery
         },
         headers: {
             'Content-Type': 'application/json'

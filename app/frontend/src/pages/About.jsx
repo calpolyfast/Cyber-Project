@@ -32,12 +32,12 @@ const About = () => {
     ]
 
     return <ContentWrapper>
-        <h1 className="text-4xl font-bold text-center text-black p-2">About Us</h1>
-        <div className="bg-white font-sans border-2 border-secondary rounded-sm text-black p-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Animi iste, hic aperiam eum voluptatibus eius neque a ipsa, ipsum vitae provident, beatae pariatur sunt quia.</div>
-        <div className="flex flex-col md:grid gap-2 grid-cols-2">{members.map((member, index) => {
-            return <MemberCard key={member.order} name={member.name} linkedin={member.linkedin} description={member.description}/>
-        })}</div>
-    </ContentWrapper>
+            <h1 className="text-4xl font-bold text-center text-black p-2">About Us</h1>
+            <div className="bg-white font-sans border-2 border-secondary rounded-sm text-black p-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Animi iste, hic aperiam eum voluptatibus eius neque a ipsa, ipsum vitae provident, beatae pariatur sunt quia.</div>
+            <div className="flex flex-col md:grid gap-2 grid-cols-2">{members.map((member, index) => {
+                return <MemberCard key={member.order} name={member.name} linkedin={member.linkedin} description={member.description}/>
+            })}</div>
+        </ContentWrapper>
 }
 
 export default About

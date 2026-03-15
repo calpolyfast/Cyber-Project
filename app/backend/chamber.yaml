@@ -43,16 +43,20 @@ spec:
                       - containerPort: 3000
                   env:
                       # app connects to postgres in the same Pod
-                      - name: DATABASE_HOST
-                        value: 127.0.0.1
-                      - name: DATABASE_PORT
-                        value: "5432"
-                      - name: DATABASE_USER
-                        value: postgres
-                      - name: DATABASE_PASSWORD
-                        value: postgres
-                      - name: DATABASE_NAME
-                        value: devdb
+                      - name: DATABASE_URL
+                        value: "postgresql://postgres:postgres@localhost:5432/devdb"
+                      - name: CLOUDINARY_CLOUD_NAME
+                        value: "${CLOUDINARY_CLOUD_NAME}"
+                      - name: CLOUDINARY_API_KEY
+                        value: "${CLOUDINARY_API_KEY}"
+                      - name: CLOUDINARY_API_SECRET
+                        value: "${CLOUDINARY_API_SECRET}"
+                      - name: JWT_SECRET
+                        value: "${JWT_SECRET}"
+                
+                - name: browser
+                  image: mcr.microsoft.com/playwright:v1.52.0-noble
+                  command: ["sleep", "infinity"]
 ---
 apiVersion: v1
 kind: Service

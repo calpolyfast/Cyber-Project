@@ -11,14 +11,15 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
 import Orders from "./pages/Orders"
+import MobileNav from "./components/MobileNav"
 
 function App() {
   return (
     <Router>
         <AuthProvider>
             <CartProvider>
-                <NavBar></NavBar>
-                <div className="flex flex-col mx-8 md:mx-32">
+                <main className="full-screen">
+                    <NavBar></NavBar>
                     <Routes>
                         <Route index element={
                             <Home />
@@ -30,7 +31,7 @@ function App() {
                             <Cart />
                         } />
                         <Route path={"/admin"} element={
-                            <Admin />
+                            <ProtectedRoute roles={["Admin"]}><Admin /></ProtectedRoute>
                         } />
                         <Route path={"/login"} element={
                             <Login />
@@ -45,7 +46,8 @@ function App() {
                             <ProtectedRoute><Orders /></ProtectedRoute>
                         } />
                     </Routes>
-                </div>
+                    <MobileNav></MobileNav>
+                </main>
             </CartProvider>
         </AuthProvider>
     </Router>
