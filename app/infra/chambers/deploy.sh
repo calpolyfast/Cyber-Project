@@ -9,4 +9,4 @@ export APP_IMAGE="backend-app:latest"
 envsubst < chamber.yaml | kubectl apply -f -
 kubectl apply -f traefik.yaml
 kubectl apply -f rbac-traefik-endpointslices.yaml
-kubectl exec -it deploy/chamber-${INSTANCE_ID} -c app -- npx prisma migrate dev
+#kubectl exec -it deploy/chamber-${INSTANCE_ID} -c app -- npx prisma migrate dev

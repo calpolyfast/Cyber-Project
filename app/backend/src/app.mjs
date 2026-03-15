@@ -6,6 +6,7 @@ import options from './cors_options.js'
 import cookieParser from 'cookie-parser'
 import path from 'path'
 import { fileURLToPath } from 'url';
+import { execSync } from "node:child_process"
 
 import UserRouter from './users/users.routes.js'
 import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.routes.js'
@@ -57,7 +58,10 @@ app.get('/api/db-test', async (req, res) => {
 
 app.listen(port, async () => {
   // Populate the database with some initial data for testing purposes
-  await populateUsersAndProducts()
+    execSync("npx prisma migrate dev", {
+        stdio: "inherit"
+    });
+    await populateUsersAndProducts()
 
-  console.log(`Server listening on http://localhost:${port}`);
+    console.log(`Server listening on http://localhost:${port}`);
 });

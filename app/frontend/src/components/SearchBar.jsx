@@ -20,6 +20,10 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
                 console.error(reason)
             })
     }, [])
+
+    const clearSearch = () => {
+        setInput("")
+    }
     
     const handleChange = (e) => {
         const next = e.target.value;

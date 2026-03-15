@@ -55,7 +55,8 @@ spec:
                         value: "${JWT_SECRET}"
                 
                 - name: browser
-                  image: mcr.microsoft.com/playwright:v1.52.0-noble
+                  image: playwright-browser:latest
+                  imagePullPolicy: Never
                   command: ["sleep", "infinity"]
 ---
 apiVersion: v1
