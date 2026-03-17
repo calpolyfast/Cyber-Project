@@ -1,0 +1,16 @@
+NOTE: The products have to exist in the container db. You'll have to use file data
+in the request to create a product (it involves an image upload)
+
+{
+  "orderItems": [
+    {
+      "productId": 1,
+      "quantity": 2
+    },
+    {
+      "productId": 2,
+      "quantity": 1
+    }
+  ],
+  "totalPrice": 59.97
+}

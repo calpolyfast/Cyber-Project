@@ -1,20 +1,30 @@
+import api from "./axios.mjs";
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 import axios from "axios";
 
 export const getProducts = () => {
     // Fetch from the backend with search query
-    return axios.get(`${API_BASE_URL}/products`, {
+    return api.get(`/products`, {
         headers: {
             'Content-Type': 'application/json'
         }
     })
 };
 
+export const getProductById = (productId) => {
+    return api.get(`/products/${productId}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 export const searchProduct = (searchQuery) => {
     // Fetch from the backend with search query
-    return axios.get(`${API_BASE_URL}/search`, {
+    return api.get(`/products/search`, {
         params: {
-            query: searchQuery
+            name: searchQuery
         },
         headers: {
             'Content-Type': 'application/json'
@@ -22,7 +32,13 @@ export const searchProduct = (searchQuery) => {
     })
 };
 
-export const addProduct = (product) => {
+export const addProduct = (formData) => {
     // Fetch from the backend with search query
-    return axios.post(`${API_BASE_URL}/products`, product)
+    return api.post(`/products`, formData, 
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    )
 };
