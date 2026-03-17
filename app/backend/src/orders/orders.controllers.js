@@ -26,69 +26,69 @@ export const createOrderController = async (req, res) => {
     try {
         const fullOrder = await prisma.$transaction(async (tx) => {
 
-        // Create the order
-        const order = await tx.order.create({
-            data: {
-                customerId: Number(req.userId),
-                totalPrice
-            }
-        })
-
-        for (const orderItem of orderItems) {
-
-            // Verify quantity
-            if (!orderItem.quantity || orderItem.quantity < 0 || orderItem.quantity > 20) {
-                throw new Error("INVALID_QUANTITY")
-            }
-
-            // Verify product exists
-            const product = await tx.product.findUnique({
-                where: { id: Number(orderItem.productId) },
-                select: { id: true }
-            })
-
-            if (!product) {
-                throw new Error("INVALID_PRODUCT")
-            }
-            
-            // Add the product * quantity to the actualTotalPrice
-            actualTotalPrice += product.price * orderItem.quantity
-            // Create the order item
-            await prisma.orderItem.create({
+            // Create the order
+            const order = await tx.order.create({
                 data: {
-                    quantity: orderItem.quantity,
-                    productId: orderItem.productId,
-                    orderId: order.id
+                    customerId: Number(req.userId),
+                    totalPrice
                 }
             })
-        }
 
-        // Get user info
-        const user = await tx.user.findUnique({
-            where: { id: req.userId }
-        })
+            for (const orderItem of orderItems) {
 
-        // Create invoice
-        await tx.invoice.create({
-            data: {
-                orderId: order.id,
-                username: user.username,
-                email: user.email
-            }
-        })
+                // Verify quantity
+                if (!orderItem.quantity || orderItem.quantity < 0 || orderItem.quantity > 20) {
+                    throw new Error("INVALID_QUANTITY")
+                }
 
-        // Return the completed order
-        return tx.order.findUnique({
-            where: { id: order.id },
-            include: {
-                orderItems: {
-                    include: {
-                        product: true
+                // Verify product exists
+                const product = await tx.product.findUnique({
+                    where: { id: Number(orderItem.productId) },
+                    select: { id: true }
+                })
+
+                if (!product) {
+                    throw new Error("INVALID_PRODUCT")
+                }
+                
+                // Add the product * quantity to the actualTotalPrice
+                actualTotalPrice += product.price * orderItem.quantity
+                // Create the order item
+                await prisma.orderItem.create({
+                    data: {
+                        quantity: orderItem.quantity,
+                        productId: orderItem.productId,
+                        orderId: order.id
                     }
-                },
-            invoice: true
+                })
             }
-        })
+
+            // Get user info
+            const user = await tx.user.findUnique({
+                where: { id: req.userId }
+            })
+
+            // Create invoice
+            await tx.invoice.create({
+                data: {
+                    orderId: order.id,
+                    username: user.username,
+                    email: user.email
+                }
+            })
+
+            // Return the completed order
+            return tx.order.findUnique({
+                where: { id: order.id },
+                include: {
+                    orderItems: {
+                        include: {
+                            product: true
+                        }
+                    },
+                invoice: true
+                }
+            })
         })
 
         // Add the flag if the total prices don't match
