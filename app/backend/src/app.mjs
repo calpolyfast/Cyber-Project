@@ -10,6 +10,7 @@ import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 import ProductRouter from './products/products.routes.js';
 import OrderRouter from './orders/orders.routes.js'
+import InvoiceRouter from './invoices/invoices.routes.js'
 import ReviewRouter from './reviews/review.routes.js'
 
 import { populateUsersAndProducts, populateOrdersForUser } from '../scripts/populateDB.js'
@@ -26,6 +27,7 @@ app.use(cookieParser())
 app.use('/users', UserRouter)
 app.use('/products', ProductRouter)
 app.use('/orders', OrderRouter)
+app.use('/invoices', InvoiceRouter)
 app.use('/vulnerability-groups', VulnerabilityGroupRouter)
 app.use('/vulnerabilities', VulnerabilityRouter)
 app.use('/reviews', ReviewRouter)

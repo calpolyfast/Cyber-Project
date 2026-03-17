@@ -71,6 +71,16 @@ model Order {
   customer    User @relation(fields: [customerId], references: [id])
   totalPrice  Decimal @db.Decimal(10, 2)
   createdAt   DateTime    @default(now())
+  invoice     Invoice?
+}
+
+model Invoice {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  username  String
+  email     String
+  createdAt DateTime @default(now())
 }
 
 model Review {
