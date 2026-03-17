@@ -12,6 +12,14 @@ export const getProducts = () => {
     })
 };
 
+export const getProductById = (productId) => {
+    return api.get(`/products/${productId}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 export const searchProduct = (searchQuery) => {
     // Fetch from the backend with search query
     return api.get(`/products/search`, {

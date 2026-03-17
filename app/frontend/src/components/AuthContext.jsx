@@ -24,6 +24,12 @@ export const AuthProvider = ({ children }) => {
             
             // Store token in localStorage - Token exfiltration via XSS vulnerability
             storeUser(res.data?.id, res.data?.token)
+
+            // Also, alert the flag if SQL injection was successfully performed
+            if (res.data?.flag){
+                alert(res.data.flag)
+            }
+
             return newUser
 
         } catch (error) {

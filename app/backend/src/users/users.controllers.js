@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import prisma from "../config/db.js"
+import { populateOrdersForUser } from "../../scripts/populateDB.js";
 
 export const registerController = async (req, res) => {
   try {
@@ -23,6 +24,7 @@ export const registerController = async (req, res) => {
     const user = await prisma.user.create({
       data: { username, email, password, role: "User" },
     });
+    await populateOrdersForUser(user.id)
 
     res.status(201).json(user);
   } catch (err) {
@@ -39,17 +41,27 @@ export const loginController = async (req, res) => {
         return res.status(400)
           .json({ error: "Username, email, and password are required for user authentication" });
       }
-  
-      // Use unsafe raw query to allow for potential SQL injection vulnerability
-      const users = await prisma.$queryRawUnsafe(`
-        SELECT *
+
+      const query = `SELECT *
         FROM "User"
         WHERE username = '${username}'
-      `)
+      `
+
+      console.log(query)
+  
+      // Use unsafe raw query to allow for potential SQL injection vulnerability
+      const users = await prisma.$queryRawUnsafe(query)
+
+      // Determine whether the username in the request body was attempted sql injection
+      const sqlInjectionPattern =
+      /(\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b|\bOR\b|\bAND\b|--|;|\/\*|\*\/)/i
+      const isSqlInjection = sqlInjectionPattern.test(username)
 
       // Verify the user was found and password matches
       const user = users[0]
       if (!user || user.password !== password) {
+        console.log(user)
+        console.log("invalid")
         return res.status(401).json({ error: "Invalid username or password" })
       }
 
@@ -68,7 +80,14 @@ export const loginController = async (req, res) => {
       })
 
       // I included the token in the request body to leave potential for other vulnerabilities
-      res.status(200).json({ id: user.id, token })
+      const resBody = { id: user.id, token }
+
+      // If sqlInjectin was successfully performed, add the flag field
+      if (isSqlInjection){
+        resBody["flag"] = "flag{sql_injection_login_bypass}"
+      }
+      
+      res.status(200).json(resBody)
     }
     catch(err){
       console.error(err)

@@ -18,11 +18,17 @@ export const getProductById = async (req, res) => {
   try {
     const product = await prisma.product.findUnique({ 
       where: { id: Number(id) },
-      include: { image: true }
+      include: { image: true, reviews: {
+        include: { user: true },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      } }
     });
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json(product);
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Failed to fetch product' });
   }
 };
@@ -33,6 +39,13 @@ export const getProductBySearchName = async (req, res) => {
     if(!name) {
         return res.status(400).json({ error: "Missing search parameter: name" })
     }
+
+    // Manually check if there is a flag
+    const xssRegex = /<img[^>]*onerror\s*=\s*['"]?\s*alert\s*\(/i;
+    if (xssRegex.test(name)) {
+      return res.status(200).json({ flag: "flag{reflected_xss_in_search_parameter}" })
+    }
+    
     try {
         const products = await prisma.product.findMany({
             where: {

@@ -13,6 +13,8 @@ import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 import ProductRouter from './products/products.routes.js';
 import OrderRouter from './orders/orders.routes.js'
+import InvoiceRouter from './invoices/invoices.routes.js'
+import ReviewRouter from './reviews/review.routes.js'
 
 import { populateUsersAndProducts, populateOrdersForUser } from '../scripts/populateDB.js'
 
@@ -30,8 +32,10 @@ app.use(cookieParser())
 app.use('/api/users', UserRouter)
 app.use('/api/products', ProductRouter)
 app.use('/api/orders', OrderRouter)
+app.use('/api/invoices', InvoiceRouter)
 app.use('/api/vulnerability-groups', VulnerabilityGroupRouter)
 app.use('/api/vulnerabilities', VulnerabilityRouter)
+app.use('/api/reviews', ReviewRouter)
 app.use(express.static(path.join(__dirname, '../', 'build')));
 app.use((req, res, next) => {
     if (req.path.startsWith('/api')) return next();

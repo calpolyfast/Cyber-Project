@@ -3,7 +3,7 @@ import banner_image from '../assets/placeholder.jpg';
 import product_image from '../assets/product_placeholder.png';
 import { getProducts, searchProduct } from '../api/products.mjs';
 import SearchBar from '../components/SearchBar';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ContentWrapper from '../components/ContentWrapper';
 import { CartContext } from '../components/CartContext';
 
@@ -90,7 +90,9 @@ const ProductListing = ({ item }) => {
     return <div className="flex flex-col justify-between rounded-lg gap-4 p-2 bg-white shadow-xl">
         <div>
             <div className="flex flex-col gap-1 m-1 font-sans">
-                <h2 className="text-2xl font-bold">{item.name}</h2>
+                <Link to={`/product/${item.id}`}>
+                    <h2 className="text-2xl font-bold hover:underline hover:text-primary">{item.name}</h2>
+                </Link>
                 <p>{item.description}</p>
                 <div>
                     <p className="text-2xl font-bold">{"$" + Number(item.price).toFixed(2)}</p>
@@ -112,8 +114,8 @@ const ProductListing = ({ item }) => {
             <div className="w-[50%] h-[50%] max-w-10 max-h-10 cursor-pointer">
                 <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"
+                    fill="none" stroke="currentColor" strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round"
                     aria-hidden="true" focusable="false">
                     <circle cx="9" cy="20" r="1"/>
                     <circle cx="18" cy="20" r="1"/>
@@ -126,7 +128,6 @@ const ProductListing = ({ item }) => {
 
 const Home = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [reflectedQuery, setReflectedQuery] = useState("");
     const [products, setProducts] = useState([]);
     const [productsLoaded, setProductsLoaded] = useState(false)
     
@@ -138,7 +139,11 @@ const Home = () => {
     //     price: "$0.00"
     // }
 
+    // On initial render, decide whether to fetch all products
+    // or search by name
     useEffect(() => {
+        const decodedQuery = decodeURIComponent(searchParams.get("search"))
+
         getProducts()
             .then(async ({ data }) => {
                 setProducts(data)
@@ -146,22 +151,26 @@ const Home = () => {
             })
     }, [])
 
-    return <>
-    <ContentWrapper>
-            <h1 className="text-4xl text-center font-bold">For Sale</h1>
+    
+
+    return <div className="page-wrapper">
+        <ContentWrapper>
+            <h1 className="text-4xl text-center border-b font-bold">Home Page</h1>
             <SearchBar query={searchParams.get("search")} setQuery={setSearchParams} setProducts={setProducts} />
-            <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{
-            productsLoaded ?
-            products.map((product, index) => {
-                return <ProductListing key={index} item={product}/>
-            }) :
-            Array(8).fill(<PlaceholderListing />)
-            }</div>
+            <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                {
+                    productsLoaded ?
+                        products.map((product, index) => {
+                            return <ProductListing key={index} item={product}/>
+                        }) :
+                        Array(8).fill(<PlaceholderListing />)
+                }
+            </div>
         </ContentWrapper>
         <div className="absolute sm:bottom-4 bottom-24 right-4">
             <CartWidget />
         </div>
-    </>
+    </div>
 }
 
 export default Home
