@@ -29,12 +29,6 @@ app.use(express.json())
 app.use(cors(options))
 app.use(cookieParser())
 
-<<<<<<< HEAD
-app.use('/users', UserRouter)
-app.use('/products', ProductRouter)
-app.use('/vulnerability-groups', VulnerabilityGroupRouter)
-app.use('/vulnerabilities', VulnerabilityRouter)
-=======
 app.use('/api/users', UserRouter)
 app.use('/api/products', ProductRouter)
 app.use('/api/orders', OrderRouter)
@@ -47,7 +41,6 @@ app.use((req, res, next) => {
     if (req.path.startsWith('/api')) return next();
     res.sendFile(path.join(__dirname, '../', 'build', 'index.html'));
 });
->>>>>>> frontend/main
 
 app.get('/api', (req, res) => {
   res.send('Hello World!');
@@ -67,10 +60,6 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
-=======
 app.listen(port, async () => {
   // Populate the database with some initial data for testing purposes
     execSync("npx prisma migrate dev", {
@@ -79,5 +68,4 @@ app.listen(port, async () => {
     await populateUsersAndProducts()
 
     console.log(`Server listening on http://localhost:${port}`);
->>>>>>> frontend/main
 });
