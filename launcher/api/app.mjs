@@ -2,6 +2,7 @@ import express from 'express'
 import { spawn } from "child_process";
 import cors from "cors";
 import options from './cors_options.js';
+import { v4 } from 'uuid'
 
 const app = express()
 const port = 4000
@@ -38,6 +39,26 @@ app.post('/api/send-link-payload', (req, res) => {
         if (res.headersSent)
             return
         return res.status(200).json({ data: "No Effect" })
+    })
+})
+
+app.get('/api/chamber/new', (req, res) => {
+    const chamberId = v4();
+    res.send(chamberId)
+
+    // const proc = spawn("bash", ["../../infra/chambers/deploy.sh", chamberId])
+
+    proc.stdout.on("data", (data) => {
+        if (res.headersSent)
+            return
+        console.log(data.toString())
+        proc.kill()
+        return res.status(200).json({ data: data.toString() })
+    })
+
+    proc.on("close", () => {
+        if (!res.headersSent)
+            res.status(500)
     })
 })
 

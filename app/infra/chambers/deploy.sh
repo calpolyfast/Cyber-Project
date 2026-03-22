@@ -2,7 +2,12 @@ set -a
 source .env
 set +a
 
-export INSTANCE_ID="test-2-id"
+if [ -z "$1" ]; then
+    echo "Error: missing required argument"
+    exit 1
+fi
+
+export INSTANCE_ID="$1"
 export BASE_DOMAIN="localhost"
 export APP_IMAGE="backend-app:latest"
 
