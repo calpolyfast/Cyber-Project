@@ -1,38 +1,48 @@
 import { addProduct } from "../api/products.mjs";
+import ContentWrapper from "../components/ContentWrapper";
 
 const Admin = () => {
     const handleNewProduct = (e) => {
-        const form = e.target;
         e.preventDefault();
-        const product = {
-            name: form.productname.value, 
-            price: form.productprice.value, 
-            visible: form.productname.visible === "on"
-        }
-        console.log(product)
-        addProduct(product);
+        const form = e.target;
+        const formData = new FormData();
+        const fileInput = form.image;
+
+        formData.append("file", fileInput.files[0]);
+        formData.append("name", form.name.value);
+        formData.append("price", form.price.value);
+        formData.append("visible", form.visible[0].checked);
+        addProduct(formData);
     }
 
-    return <div className="flex flex-col gap-4 bg-primary-light mt-8 p-4">
-        <h1 className="text-4xl font-bold text-center text-black p-2">Admin Dashboard</h1>
-        <form onSubmit={handleNewProduct} className="sm:flex sm:flex-col md:grid md:grid-cols-2">
-            <fieldset className="flex flex-col gap-2">
-                <legend>Add Product</legend>
-                <label>Product Name</label>
-                <input type="text" id="productname" className="border rounded-sm"></input>
-                <label>Product Price</label>
-                <input type="text" id="productprice" className="border rounded-sm"></input>
-                <div className="flex flex-row gap-2 items-center">
-                    <label>Visible</label>
-                    <input type="checkbox" id="productvisibility" className="border rounded-sm"></input>
-                </div>
-                <button className="hover:bg-white rounded-sm border" type="submit">Submit</button>
-            </fieldset>
-            <fieldset>
-                <legend>Manage Products</legend>
-            </fieldset>
-        </form>
-    </div>
+    return <ContentWrapper>
+        <h1 className="text-4xl text-center border-b font-bold text-dark shadow-2xl">Administrator Dashboard</h1>
+        <div className="flex flex-col bg-bg rounded-md">
+            <div className="flex flex-col flex-1 gap-2 m-2">
+                <h1>Manage Items</h1>
+                <form className="flex flex-col gap-2 border-2 rounded-md p-2" onSubmit={handleNewProduct}>
+                    <input name="name" className="border rounded-md p-1" placeholder="Name"></input>
+                    <input name="price" className="border rounded-md p-1" placeholder="Price"></input>
+                    <div className="border rounded-md p-1 flex flex-row justify-between">
+                        <div className="flex w-full justify-center gap-1">
+                            <input name="visible" type="radio" defaultChecked={true}></input>
+                            <h1>Visible</h1>
+                        </div>
+                        <div className="flex w-full justify-center gap-1">
+                            <input name="visible" type="radio"></input>
+                            <h1>Not Visible</h1>
+                        </div>
+                    </div>
+                    <input name="image" className="border rounded-md p-1" placeholder="Name" type="file"></input>
+                    <button className="border rounded-md p-1 hover:bg-primary" id="submit">Create Item</button>
+                </form>
+            </div>
+            <div className="flex flex-col flex-1 gap-2 m-2">
+                <h1>Manage Users</h1>
+                <div>Get and display users?</div>
+            </div>
+        </div>
+    </ContentWrapper>
 }
 
 export default Admin

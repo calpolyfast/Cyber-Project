@@ -1,12 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #6E513D;
-    --color-secondary: #9AA845;
-    --color-dark: #332721;
-    --color-primary-light: #B28964;
+    --color-primary: #7A9E7E;
+    --color-secondary: #2F5D3A;
+    --color-dark: #2B2B2B;
+    --color-primary-light: #C46A4A;
+    --color-bg: #F4F1E8;
 }
 
 :root {
     font-family: "Cherry Cream Soda", system-ui;
+}
+
+.full-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    padding: 40px;
+    width: 100%;
+    background-color: var(--color-bg);
+    overflow-y: auto;
 }
