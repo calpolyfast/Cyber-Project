@@ -21,47 +21,46 @@ const PlaceholderTableElement = () => {
 const Invoice = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [loaded, setLoaded] = useState(false)
-    const [orderInfo, setOrderInfo] = useState([{name:"tomato", price:100, amount:2, total:200}])
+    const [orderInfo, setOrderInfo] = useState([])
 
     useEffect(() => {
         getInvoiceByOrderID(searchParams.get("id"))
             .then((res) => {
-                setLoaded(true)
                 setOrderInfo(res.data)
+                setLoaded(true)
             })
     }, [])
 
     return <ContentWrapper>
         <div className="flex flex-col items-center align-middle gap-4 p-4">
             <div className="flex flex-col w-full p-4 gap-2 bg-primary">
-                <h1 className="text-4xl font-bold text-center text-white p-2">Order Number {<RenderOnLoaded placeholder={"..."}></RenderOnLoaded>}</h1>
-                <p className="text-white">Date Ordered: {<RenderOnLoaded placeholder={"..."}></RenderOnLoaded>}</p>
-                <p className="text-white">Customer ID: {<RenderOnLoaded placeholder={"..."}></RenderOnLoaded>}</p>
-                <p className="text-white">Customer email: {<RenderOnLoaded placeholder={"..."}></RenderOnLoaded>}</p>
+                <h1 className="text-4xl font-bold text-center text-white p-2">Order # {loaded ? orderInfo.order.id : null}</h1>
+                <p className="text-white">Date Ordered: {loaded ? (new Date(orderInfo.createdAt).toLocaleString()) : null}</p>
+                <p className="text-white">Customer Email: {loaded ? orderInfo.email : null} </p>
+                <p className="text-white">Customer Username: {loaded ? orderInfo.username : null} </p>
             </div>
             
             <table className="w-full">
                 <thead>
                     <tr>
-                        <th>Item Name</th>
-                        <th>Price</th>
-                        <th>Amount</th>
-                        <th>Total</th>
+                        <th className="text-left">Item Name</th>
+                        <th className="text-left">Price</th>
+                        <th className="text-left">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <RenderOnLoaded placeholder={<PlaceholderTableElement />}>
-                        {orderInfo ?? orderInfo.map((item, index) => ( 
-                        <tr key={index}>
-                            <td>{item.name}</td>
-                            <td>${item.price}</td>
-                            <td>{item.amount}</td>
-                            <td>${item.total}</td>
+                    {loaded ? orderInfo.order.orderItems.map((item, index) => {
+                        return <tr key={index}>
+                            <td>{item.product.name}</td>
+                            <td>${item.product.price}</td>
+                            <td>{item.quantity}</td>
                         </tr>
-                        ))}
-                    </RenderOnLoaded>
+                    }) : null}
                 </tbody>
             </table>
+            <div className="w-full">
+                <h1 className="text-2xl">Total: ${loaded ? orderInfo.order.totalPrice : null}</h1>
+            </div>
         </div>
         </ContentWrapper>
 }

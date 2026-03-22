@@ -15,6 +15,7 @@ const OrderEntry = ({ order }) => {
             <div className="flex-1" >{order.id}</div>
             <div className="flex-1" >{"$" + order.totalPrice}</div>
             <div className="flex-1" >{datePlaced.toDateString()}</div>
+            <a href={`/invoice/?id=${order.id}`} className="absolute right-10">View Invoice</a>
         </li>
 }
 
