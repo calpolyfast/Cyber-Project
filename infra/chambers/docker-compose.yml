@@ -1,19 +1,4 @@
 services:
-  traefik:
-    image: traefik:v3.6.8
-    command:
-      - --api.dashboard=true
-      - --api.insecure=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-    ports:
-      - "80:80"
-      - "8080:8080" # dashboard (dev only)
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - proxy
   postgres:
     image: postgres:latest
     ports:
@@ -24,26 +9,6 @@ services:
       POSTGRES_DB: devdb
     volumes:
       - pgdata:/var/lib/postgresql
-    networks:
-      - internal
-  app:
-    build: .
-    depends_on:
-      - postgres
-    networks:
-      - proxy
-      - internal
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.app.rule=Host(`app.localhost`)
-      - traefik.http.routers.app.entrypoints=web
-      - traefik.http.services.app.loadbalancer.server.port=3000
-
-networks:
-  proxy:
-    driver: bridge
-  internal:
-    driver: bridge
 
 volumes:
   pgdata:
