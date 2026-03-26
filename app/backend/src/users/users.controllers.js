@@ -93,6 +93,14 @@ export const loginController = async (req, res) => {
       console.error(err)
       res.status(500).json({ error: "Failed to authenticate user" })
     }
+<<<<<<< HEAD
+=======
+}
+
+export const logoutController = async (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'User logged out' });
+>>>>>>> frontend/main
 }
 
 export const logoutController = async (req, res) => {
