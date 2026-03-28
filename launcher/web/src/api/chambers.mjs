@@ -1,5 +1,5 @@
 import api from "./axios.mjs"
 
 export const createNewChamber = () => {
-    return api.get('/api/chamber/new')
+    return api.get('/chamber/new')
 }
