@@ -26,7 +26,7 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./app/backend
           file: ./app/backend/Dockerfile
           push: true
           tags: raglem/backend-app:latest
@@ -35,8 +35,8 @@ jobs:
       - name: Build and push playwright image
         uses: docker/build-push-action@v5
         with:
-          context: ./launcher/api/playwright/scripts
-          file: Dockerfile
+          context: ./launcher/api/playwright
+          file: ./launcher/api/playwright/Dockerfile
           push: true
           tags: raglem/playwright-browser:latest
 
