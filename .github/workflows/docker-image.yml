@@ -32,7 +32,7 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./launcher/api/scripts
+          context: ./launcher/api/playwright/scripts
           file: Dockerfile
           push: true
           tags: raglem/frontend-app:latest
