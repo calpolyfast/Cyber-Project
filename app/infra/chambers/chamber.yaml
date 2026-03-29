@@ -38,7 +38,7 @@ spec:
 
                 - name: app
                   image: ${APP_IMAGE}
-                  imagePullPolicy: Never
+                  imagePullPolicy: Always
                   ports:
                       - containerPort: 3000
                   env:
@@ -56,7 +56,7 @@ spec:
                 
                 - name: browser
                   image: playwright-browser:latest
-                  imagePullPolicy: Never
+                  imagePullPolicy: Always
                   command: ["sleep", "infinity"]
 ---
 apiVersion: v1

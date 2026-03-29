@@ -1,0 +1,1 @@
+export const CHAMBER_ID = 'chambers_id';
