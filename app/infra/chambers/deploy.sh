@@ -8,7 +8,6 @@ set +a
 
 export INSTANCE_ID
 export BASE_DOMAIN="localhost"
-export APP_IMAGE="backend-app:latest"
 
 envsubst < chamber.yaml | kubectl apply -f -
 kubectl apply -f traefik.yaml

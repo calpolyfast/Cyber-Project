@@ -2,7 +2,7 @@ name: Docker Image Cli
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "main", "launcher" ]
   workflow_dispatch:
 
 jobs:
