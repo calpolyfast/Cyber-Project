@@ -37,8 +37,8 @@ spec:
                         mountPath: /var/lib/postgresql/data
 
                 - name: app
-                  image: ${APP_IMAGE}
-                  imagePullPolicy: Never
+                  image: raglem/backend-app:latest
+                  imagePullPolicy: Always
                   ports:
                       - containerPort: 3000
                   env:
@@ -55,8 +55,8 @@ spec:
                         value: "${JWT_SECRET}"
                 
                 - name: browser
-                  image: playwright-browser:latest
-                  imagePullPolicy: Never
+                  image: raglem/playwright-browser:latest
+                  imagePullPolicy: Always
                   command: ["sleep", "infinity"]
 ---
 apiVersion: v1
