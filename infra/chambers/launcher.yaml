@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: launcher
+    labels:
+        app: launcher
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: launcher
+    template:
+        metadata:
+            labels:
+                app: launcher
+        spec:
+            containers:
+                - name: launcher
+                  image: ${LAUNCHER_APP_IMAGE}
+                  imagePullPolicy: Never
+                  ports:
+                      - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: launcher
+    labels:
+        app: launcher
+spec:
+    selector:
+        app: launcher
+    ports:
+        - name: http
+          port: 80
+          targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: launcher
+    labels:
+        app: launcher
+spec:
+    ingressClassName: traefik
+    rules:
+        - host: localhost
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: launcher
+                            port:
+                                number: 80

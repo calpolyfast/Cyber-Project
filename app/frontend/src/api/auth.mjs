@@ -14,10 +14,12 @@ export const removeStoredUser = () => {
 
 export const postLogin = (username, password) => {
     // Fetch from the backend with search query
-    return api.post(`/users/login`, {
-        username,
-        password
-    })
+    return api.post(`/users/login`,
+        {
+            username: username, 
+            password: password
+        }
+    )
 };
 
 export const postRegister = (username, email, password) => {
