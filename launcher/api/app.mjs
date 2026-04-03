@@ -1,11 +1,11 @@
 import express from 'express'
 import { spawn } from "child_process";
 import path from 'path';
-import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import cors from "cors";
 import options from './cors_options.js';
 import { randomUUID } from 'crypto';
+import cron from 'node-cron'
 
 const app = express()
 const port = 4000
@@ -71,6 +71,67 @@ app.post('/api/send-link-payload', (req, res) => {
             return
         return res.status(200).json({ data: "No Effect" })
     })
+})
+
+// Every hour, delete all chamber deployments that are older than 1 hour
+cron.schedule('0 * * * *', async () => {
+    try {
+        let output = ''
+        const getProc = spawn("kubectl", 
+            [
+                'get',
+                'deployments',
+                '--no-headers',
+                '-o',
+                'custom-columns=NAME:.metadata.name,AGE:.metadata.creationTimestamp'
+            ]
+        )
+
+        getProc.stdout.on('data', (data) => {
+            output += data.toString()
+        })
+
+        getProc.stderr.on('data', (data) => {
+            console.error(`STDERR: ${data}`)
+            rej("ERROR")
+        })
+
+        // Wait for the process to finish and handle errors
+        await new Promise((res, rej) => {
+            getProc.on('close', (code) => {
+                    if (code === 0) res()
+                    else rej(new Error(errorOutput || `kubectl exited with code ${code}`))
+                })
+            getProc.on('error', rej)
+        })
+
+        const deployments = output.split("\n")
+            .map(dep => dep.trim())
+            .filter(dep => dep !== "")
+            .map(line => {
+                const [name, age] = line.split(/\s+/)
+                return { name, age: new Date(age) }
+            })
+            .filter(dep => dep.name.startsWith("chamber-") && new Date() - new Date(dep.age) > 1000)
+
+        // Delete deployments in parallel
+        await Promise.all(deployments.map(dep => {
+            return new Promise((res, rej) => {
+                const delProc = spawn("kubectl", ["delete", "deployment", dep.name]);
+                delProc.stdout.on('data', (dep) => console.log(dep.toString()));
+                delProc.stderr.on('data', (dep) => console.error(dep.toString()));
+                delProc.on('close', (code) => {
+                    if (code === 0) res();
+                    else rej(new Error(`Failed to delete deployment ${dep.name}`));
+                })
+                delProc.on('error', rej);
+            })
+        }))
+    }
+    catch(err){
+        console.error(err)
+    }
+
 })
 
 app.use(express.static(path.join(__dirname, 'build')));
