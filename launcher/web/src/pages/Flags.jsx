@@ -3,6 +3,7 @@ import { AppContext } from "../context/AppContext"
 import allFlags from "../flags.json"
 import { PiSmileySadDuotone } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import Nav from "../components/Nav";
 
 export default function Flags() {
     const navigate = useNavigate()
@@ -63,15 +64,7 @@ export default function Flags() {
                     
                 </div>
             </div>
-            <nav className="flex justify-start w-[80%]">
-                <button 
-                    className="w-fit font-bold font-serif p-2 border border-secondary text-xl rounded-sm cursor-pointer
-                                transform hover:scale-110 transition-transform duration-300 ease-in-out" 
-                    onClick={() => navigate("/")}
-                >
-                    Back Home
-                </button>
-            </nav>
+            <Nav />
         </div>
     )
 }
