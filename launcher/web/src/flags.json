@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "name": "flag{reflected_xss_in_search_parameter}"
+    }, 
+    {
+        "id": 2,
+        "name": "flag{sql_injection_login_bypass}"
+    },
+    {
+        "id": 3,
+        "name": "flag{client_side_order_manipulation}"
+    }
+]
