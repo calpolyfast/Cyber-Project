@@ -1,4 +1,5 @@
 import prisma from "../config/db.js"
+import { JSDOM } from "jsdom"
 
 const validStarRatings = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
 
@@ -44,11 +45,24 @@ export const createReview = async (req, res) => {
         }
 
         // 3. Create the review
+        // Partially sanitize. The frontend removes characters '<' and '>', but the backend only removes <script></script> tags. The user can modify the request and use <img>
+        const cleaned = comment.replace(/<\/?script>/gi, "")
+
+        // Test cleaned comment for rendering HTML
+        const dom = new JSDOM(comment);
+        const domBody = dom.window.document.body;
+
+        const hasHTML = Array.from(domBody.childNodes).some(
+            node => node.nodeType === 1
+        )
+
+        console.log(hasHTML)
+
         const review = await prisma.review.create({
             data: {
                 userId: Number(userId),
                 productId: Number(productId),
-                comment: comment,
+                comment: cleaned,
                 stars: Number(stars),
             }
         })
@@ -56,6 +70,11 @@ export const createReview = async (req, res) => {
             where: { id: review.id },
             include: { product: true, user: true } 
         })
+
+        if (hasHTML)
+        {
+            fullReview.flag = "$FLAG"
+        }
 
         return res.status(201).json(fullReview)
     }
