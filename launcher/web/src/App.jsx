@@ -1,15 +1,26 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Home from "./components/Home"
+import Home from "./pages/Home"
+import Labs from "./pages/Labs"
+import Flags from "./pages/Flags"
+import { AppProvider } from "./context/AppContext"
 
 function App() {
   return (
-    <Router>
-        <div className="flex flex-col h-svh w-svw">
-            <Routes>
-                <Route index element={<Home />} />
-            </Routes>
+    <AppProvider>
+      <main className="h-screen w-screen flex flex-row justify-stretch items-stretch overflow-y-auto">
+        <div className="flex bg-primary h-full w-20"></div>
+        <div className="flex flex-1 bg-white text-gray-600">
+          <Router>
+              <Routes>
+                  <Route index element={<Home />} />
+                  <Route path="/labs" element={<Labs />} />
+                  <Route path="/flags" element={<Flags />} />
+              </Routes>
+          </Router>
         </div>
-    </Router>
+        <div className="flex bg-primary h-full w-20"></div>
+      </main>
+    </AppProvider>
   )
 }
 

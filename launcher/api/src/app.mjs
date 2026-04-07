@@ -27,7 +27,7 @@ app.get('/api/', (req, res) => {
 app.post('/api/new-chamber', (req, res) => {
 
     // Configure current directory of deploy.sh
-    const scriptDir = path.resolve(__dirname, "../../infra/chambers");
+    const scriptDir = path.resolve(__dirname, "../../../infra/scripts");
     const scriptName = "deploy.sh";
 
     const uuid = randomUUID()
