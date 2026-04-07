@@ -35,8 +35,8 @@ jobs:
       - name: Build and push playwright image
         uses: docker/build-push-action@v5
         with:
-          context: ./launcher/api/playwright
-          file: ./launcher/api/playwright/Dockerfile
+          context: ./launcher/playwright
+          file: ./launcher/playwright/Dockerfile
           push: true
           tags: raglem/playwright-browser:latest
 
