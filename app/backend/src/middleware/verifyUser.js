@@ -23,6 +23,7 @@ const verifyUser = async (req, res, next) => {
         req.userId = decoded.userId;
         next();
     } catch (error) {
+        console.log("INVALID JWT")
         console.log(error)
         return res.status(401).json({ error: 'Invalid authentication token' });
     }
