@@ -2,13 +2,21 @@ import {
     getAllAccounts, getProfile,
     deleteAccount, updateAccount
 } from './accounts.controllers.js';
+import verifyUser from '../middleware/verifyUser.js';
+import verifyAdmin from '../middleware/verifyAdmin.js';
 import { Router } from 'express';
 
 const accountsRouter = Router()
+
+accountsRouter.use(verifyUser)
+accountsRouter.get('/me', getProfile);
+accountsRouter.put('/', updateAccount);
+accountsRouter.delete('/', deleteAccount);
+
+accountsRouter.use(verifyAdmin)
 accountsRouter.get('/', getAllAccounts);
-accountsRouter.get('/profile', getProfile);
-accountsRouter.delete('/delete', deleteAccount);
-accountsRouter.get('/update', updateAccount);
+
+export default accountsRouter
 
 
 

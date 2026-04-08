@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import prisma from "../config/db.js"
 
-const verifyOwner = async (req, res, next) => {
+const verifyAdmin = async (req, res, next) => {
     // Verify the token
     try {
         // Check if token is included
@@ -18,9 +18,10 @@ const verifyOwner = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await prisma.user.findUnique({ where: { id: decoded.userId }})
 
-        // Verify the user id is valid and the user is an Owner
-        if(!user || user.role !== 'Owner'){
-            return res.status(401).json({ error: 'Invalid authentication token' });
+        // Verify the user id is valid and the user is an Admin
+        if(!user || user.role !== 'Admin'){
+            console.log(user.role)
+            return res.status(401).json({ error: 'User does not have Admin role' });
         }
 
         // Attach the user id to the request object
@@ -31,4 +32,4 @@ const verifyOwner = async (req, res, next) => {
         return res.status(401).json({ error: 'Invalid authentication token' });
     }
 }
-export default verifyOwner
+export default verifyAdmin

@@ -1,11 +1,15 @@
-import { json } from "express";
+import prisma from "../config/db.js";
 
 export const getAllAccounts = async (req, res) => {
-    const {accounts} = req.body;
     try {
-        accounts = await prisma.accounts.findMany();
-        res.json(accounts);
-        
+        const accounts = await prisma.user.findMany();
+        const sanitizedAccounts = accounts.map(account => ({
+            id: account.id,
+            username: account.username,
+            email: account.email,
+            role: account.role === 'User' ? 'Regular User' : 'Admin'
+        }))
+        res.status(200).json(sanitizedAccounts);
     }
     catch (error) {
         res.status(400).json({ error: 'Failed to fetch accounts' });
@@ -13,50 +17,85 @@ export const getAllAccounts = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
-    const {profile} = req.body;
+    const id = req.userId
+    console.log(id)
     try {
-        profile = await prisma.accounts.findUnique({
+        const profile = await prisma.user.findUnique({
             where: { id: Number(id)} ,
-            data: {email: String(email)},
-            data: {password: String(password)}
         });
-        res.json(profile);
+        if (!profile) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json(profile);
     }
     catch (error) {
-        res.status(404).json({error: 'Profile not found.'});
+        res.status(500).json({error: 'Server Error'});
     }
 };
 
 export const updateAccount = async (req, res) => {
-    const {newAccount} = req.body;
+    const userId = req.userId
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) }})
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify user-provided fields are valid
+    const { username, email } = req.body;
+    if (!username || !email) {
+        return res.status(400).json({ error: 'Username and email are required' });
+    }
+
+    // Verify the new username is not already in use by another account
+    const existingUsername = await prisma.user.findUnique({ where: { username: String(username) }})
+    if (existingUsername && existingUsername.id !== userId) {
+        return res.status(400).json({ error: 'Username is already in use by another account' });
+    }
+
+    // Verify the new email is not already in use by another account
+    const existingEmail = await prisma.user.findUnique({ where: { email: String(email) }})
+    if (existingEmail && existingEmail.id !== userId) {
+        return res.status(400).json({ error: 'Email is already in use by another account' });
+    }
+
     try {
-        newAccount = await prisma.accounts.update({
+        const updatedAccount = await prisma.user.update({
             where: {
-                id: Number(id),
-                
+                id: Number(userId),
             },
             data: {
+                username: String(username),
                 email: String(email),
-                password: String(password)
             }
         })
+        const sanitizedAccount = {
+            id: updatedAccount.id,
+            username: updatedAccount.username,
+            email: updatedAccount.email,
+            role: updatedAccount.role === 'User' ? 'Regular User' : 'Admin'
+        }
+        res.status(200).json({ account: sanitizedAccount })
     }
     catch (error) {
-        res.status(400).json({error: 'Profile not found.'})
+        res.status(500).json({ error: 'Server Error' })
     }
 }
 
 export const deleteAccount = async (req, res) => {
-    const {currentAccount} = req.body;
+    const userId = req.userId
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) }})
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
     try {
-            currentAccount = await prisma.accounts.findUnique({
-            where: {id: Number(id)},
-            data: {email: String(email)},
-            data: {password: String(password)}
+        await prisma.user.delete({
+            where: { id: Number(userId) },
         });
-        res.status(200).json({res: currentAccount + 'Account successfully deleted'})
+        res.status(204).json({ message: 'Account successfully deleted' });
     }
     catch (error) {
-        res.status(404).json({error: 'Profile not found.'});
+        console.log(error)
+        res.status(500).json({ error: 'Server Error' });
     }
 }

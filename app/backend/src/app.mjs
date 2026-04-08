@@ -8,6 +8,7 @@ import UserRouter from './users/users.routes.js'
 import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.routes.js'
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 import ProductRouter from './products/products.routes.js';
+import AccountRouter from './accounts/accounts.routes.js'
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/users', UserRouter)
 app.use('/products', ProductRouter)
 app.use('/vulnerability-groups', VulnerabilityGroupRouter)
 app.use('/vulnerabilities', VulnerabilityRouter)
+app.use('/accounts', AccountRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
