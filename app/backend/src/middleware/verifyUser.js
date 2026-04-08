@@ -4,17 +4,13 @@ import prisma from "../config/db.js"
 const verifyUser = async (req, res, next) => {
     // Verify the token
     try {
-        // Check if token is included
-        let token = req.header('Authorization')
+        // Retrieve the token from the cookie
+        const token = req.cookies.token
+
         if(!token) {
             return res.status(401).json({ error: 'User is not logged in to an active session' })
         }
 
-        // Remove 'Bearer ' prefix if it exists
-        if(token.startsWith('Bearer ')) {
-            token = token.slice(7, token.length);
-        }
-        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await prisma.user.findUnique({ where: { id: decoded.userId }})
 

@@ -1,5 +1,9 @@
+# Build files
+build/
+
 # Env
 *.env*
+!.env.example
 
 # Logs
 logs
@@ -14,6 +18,9 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Ignore migrations for now
+prisma/migrations/
 
 # Editor directories and files
 .vscode/*
