@@ -18,7 +18,6 @@ export const getAllAccounts = async (req, res) => {
 
 export const getProfile = async (req, res) => {
     const id = req.userId
-    console.log(id)
     try {
         const profile = await prisma.user.findUnique({
             where: { id: Number(id)} ,
@@ -26,7 +25,12 @@ export const getProfile = async (req, res) => {
         if (!profile) {
             return res.status(404).json({ error: 'User not found' });
         }
-        res.status(200).json(profile);
+        res.status(200).json({
+            id: profile.id,
+            username: profile.username,
+            email: profile.email,
+            role: profile.role === 'User' ? 'Regular User' : 'Admin'
+        });
     }
     catch (error) {
         res.status(500).json({error: 'Server Error'});
