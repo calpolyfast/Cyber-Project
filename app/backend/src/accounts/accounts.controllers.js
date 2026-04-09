@@ -78,7 +78,35 @@ export const updateAccount = async (req, res) => {
             email: updatedAccount.email,
             role: updatedAccount.role === 'User' ? 'Regular User' : 'Admin'
         }
-        res.status(200).json({ account: sanitizedAccount })
+        res.status(200).json(sanitizedAccount)
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Server Error' })
+    }
+}
+
+export const changePassword = async (req, res) => {
+    const userId = req.userId
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) }})
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    const { oldPassword, newPassword } = req.body
+    if (!oldPassword || !newPassword) {
+        return res.status(400).json({ error: 'Old password and new password are required' })
+    }
+
+    if (oldPassword !== user.password) {
+        return res.status(401).json({ error: 'Old password is incorrect' })
+    }
+
+    try {
+        await prisma.user.update({
+            where: { id: Number(userId) },
+            data: { password: String(newPassword) }
+        })
+        res.status(200).json({ message: 'Password successfully changed' })
     }
     catch (error) {
         res.status(500).json({ error: 'Server Error' })

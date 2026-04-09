@@ -5,8 +5,8 @@ export default function LoadingSpinner() {
         <div
           className="
             inline-block
-            h-20
-            w-20
+            h-12
+            w-12
             animate-spin
             rounded-full
             border-4
