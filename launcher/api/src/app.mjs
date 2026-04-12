@@ -31,22 +31,106 @@ app.post('/api/new-chamber', (req, res) => {
     const scriptName = "deploy.sh";
 
     const uuid = randomUUID()
+
     try {
         const proc = spawn("bash", [scriptName, uuid], {
             cwd: scriptDir
         });
 
+        // Set a time limit for the deployment to avoid hanging
+        const timeoutID = setTimeout(() => {
+            console.error("Deployment timed out");
+            proc.kill();
+            if (!res.headersSent) {
+                res.status(500).json({ error: "Deployment timed out" });
+            }
+        }, 10000)
+
         proc.stderr.on('data', (data) => {
             console.error(`STDERR: ${data}`);
+            if (!res.headersSent) {
+                res.status(500).json({ error: "Failed to start deployment" });
+            }
         })
 
         proc.on("close", () => {
+            clearTimeout(timeoutID)
             return res.status(200).json({ id: uuid, message: `Chamber created with id ${uuid}` })
         })
     }
     catch(err){
         console.error(err)
         res.status(500).json({ error: "Something went wrong" })
+    }
+})
+
+app.delete('/api/delete-chamber/:id', async (req, res) => {
+    const { id } = req.params
+
+    // Verify the id corresponds to an existing deployment
+    try {
+        const getProc = spawn("kubectl", 
+            [
+                'get',
+                'deployments',
+                `chamber-${id}`,
+            ]
+        )
+
+        let stderr = "";
+
+        getProc.stderr.on("data", (data) => {
+            stderr += data.toString();
+        })
+
+        // Wait for the process to finish and handle errors
+        await new Promise((res, rej) => {
+            getProc.on('close', (code) => {
+                    if (code === 0) res()
+                    else if (stderr.includes("NotFound")) res() // If the deployment is not found, we can consider it already deleted and return success
+                    else rej(new Error(`Deployment with id ${id} not found`))
+                })
+            getProc.on('error', rej)
+        })
+
+        if (stderr.includes("NotFound")){
+            return res.status(200).json({ message: `Deployment with id ${id} not found. Assuming it's already deleted.` })
+        }
+    }
+    catch(err) {
+        console.error(err)
+        return res.status(500).json({ error: "Something went wrong trying to find the chamber" })
+    }
+
+    // If the deployment exists, delete it
+    try {
+        const delProc = spawn("kubectl", [
+            "delete",
+            "deployment",
+            `chamber-${id}`
+        ], {
+            stdio: ["ignore", "pipe", "pipe"] // Ignore stdin, pipe stdout and stderr
+        })
+
+        // Log any errors
+        delProc.stderr.on("data", (data) => {
+            console.log(data)
+        })
+
+        await new Promise((res, rej) => {
+            delProc.on('close', (code) => {
+                if (code === 0) res()
+                else rej()
+            })
+
+            delProc.on('error', rej)
+        })
+
+        return res.status(200).json({ message: `Deployment with id ${id} successfully deleted` })
+    }
+    catch(err) {
+        console.error(err)
+        return res.status(500).json({ error: "Something went wrong trying to delete the chamber" })
     }
 })
 
@@ -60,7 +144,6 @@ app.post('/api/send-link-payload', (req, res) => {
     proc.stdout.on("data", (data) => {
         if (res.headersSent)
             return
-        console.log(data.toString())
         proc.kill()
         return res.status(200).json({ data: data.toString() })
     })

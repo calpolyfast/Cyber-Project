@@ -1,18 +1,19 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendLinkPayload } from "../api/payloads.mjs";
-import { createChamber } from "../api/chambers.mjs";
+import { createChamber, deleteChamber } from "../api/chambers.mjs";
 import { FaFlag, FaStoreAlt } from "react-icons/fa"
 import { FaComputer } from "react-icons/fa6"
 import { AppContext } from "../context/AppContext";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const Home = () => {
-    const { chamberId, setChamberId } = useContext(AppContext)
-    const [loadingChamber, setLoadingChamber] = useState(false)
+    const { chamberId, setChamberId, clearFlags } = useContext(AppContext)
+    const [creatingChamber, setCreatingChamber] = useState(false)
+    const [deletingChamber, setDeletingChamber] = useState(false)
 
     const handleCreateChamber = async () => {
-        setLoadingChamber(true)
+        setCreatingChamber(true)
         try {
             const res = await createChamber()
             const id = res.data.id
@@ -29,7 +30,28 @@ const Home = () => {
             console.error(err)
         }
         finally {
-            setLoadingChamber(false)
+            setCreatingChamber(false)
+        }
+    }
+
+    const handleDeleteChamber = async () => {
+        if (!chamberId) return
+
+        setDeletingChamber(true)
+        try {
+            const res = await deleteChamber(chamberId)
+            console.log(res.data.message)
+
+            // Clear the local chamber state
+            setChamberId(null)
+            sessionStorage.removeItem("FAST-chamberId")
+            clearFlags()
+        }
+        catch(err){
+            console.error(err)
+        }
+        finally {
+            setDeletingChamber(false)
         }
     }
 
@@ -40,19 +62,30 @@ const Home = () => {
         </header>
         <div className="flex justify-center">
             { chamberId &&
-                <div className="w-fit font-bold font-serif p-2 border border-secondary text-xl rounded-sm">
-                    <h2 className="text-md"> Chamber ID: { chamberId } </h2>
-                </div>
+                <nav className="flex flex-col items-center gap-4">
+                    <button 
+                        className="flex items-center p-2 gap-2 w-fit font-bold font-serif border bg-secondary text-white text-xl rounded-sm 
+                                    cursor-pointer transform hover:scale-110 transition-transform duration-300 ease-in-out" 
+                        onClick={handleDeleteChamber}
+                        disabled={deletingChamber}
+                    >
+                        { !deletingChamber ? "Exit Chamber" : "Exiting..."}
+                        { deletingChamber && <LoadingSpinner /> }
+                    </button>
+                    <div className="w-fit font-bold font-serif p-2 border border-secondary text-xl rounded-sm">
+                        <h2 className="text-md"> Chamber ID: { chamberId } </h2>
+                    </div>
+                </nav>
             }
             { !chamberId && 
                 <button 
                     className="flex items-center p-2 gap-2 w-fit font-bold font-serif border border-secondary text-xl rounded-sm 
                                 cursor-pointer transform hover:scale-110 transition-transform duration-300 ease-in-out" 
                     onClick={handleCreateChamber}
-                    disabled={loadingChamber}
+                    disabled={creatingChamber}
                 >
-                    { !loadingChamber ? "Launch New Chamber" : "Launching..."}
-                    { loadingChamber && <LoadingSpinner /> }
+                    { !creatingChamber ? "Launch New Chamber" : "Launching..."}
+                    { creatingChamber && <LoadingSpinner /> }
                 </button>
             }
         </div>
