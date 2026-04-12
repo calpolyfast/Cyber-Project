@@ -1,6 +1,7 @@
 // Username + Email validation
 export function validateUserInfo(username, email) {
   if (!username || !email) {
+    console.log("Username or email is missing. Username: ", username, " Email: ", email)
     return { valid: false, message: "Username and email are required." };
   }
 

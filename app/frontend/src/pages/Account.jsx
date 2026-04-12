@@ -60,7 +60,8 @@ export default function Account(){
 
     const updateProfile = async (e) => {
         e.preventDefault()
-        const verifiedResult = validateUserInfo({ username, email })
+        console.log(username, email)
+        const verifiedResult = validateUserInfo( username, email )
         if (!verifiedResult.valid) {
             alert(verifiedResult.message)
             return
@@ -83,6 +84,9 @@ export default function Account(){
         catch(err) {
             alert("Oops! Something went wrong while updating your profile. Please try again.")
             console.error("Failed to update profile: ", err)
+        }
+        finally {
+            setLoadingUpdate(false)
         }
     }
 
@@ -188,7 +192,7 @@ export default function Account(){
                     <div className="flex flex-col">
                         <label htmlFor="oldPassword">Old password</label>
                         <input 
-                            type="password" id="oldPassword" disabed={loadingPasswordChange}
+                            type="password" id="oldPassword" disabled={loadingPasswordChange}
                             name="oldPassword" className="border border-primary rounded p-1" 
                             value={password} onChange={(e) => setPassword(e.target.value)} 
                         />
@@ -196,7 +200,7 @@ export default function Account(){
                     <div className="flex flex-col">
                         <label htmlFor="newPassword">New password</label>
                         <input 
-                            type="password" id="newPassword" disabed={loadingPasswordChange}
+                            type="password" id="newPassword" disabled={loadingPasswordChange}
                             name="newPassword" className="border border-primary rounded p-1" 
                             value={newPassword} onChange={(e) => setNewPassword(e.target.value)} 
                         />
@@ -204,7 +208,7 @@ export default function Account(){
                     <div className="flex flex-col">
                         <label htmlFor="confirmNewPassword">Confirm new password</label>
                         <input 
-                            type="password" id="confirmNewPassword" disabed={loadingPasswordChange}
+                            type="password" id="confirmNewPassword" disabled={loadingPasswordChange}
                             name="confirmNewPassword" className="border border-primary rounded p-1" 
                             value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} 
                         />
