@@ -1,15 +1,15 @@
 FROM node:20-alpine
+
 WORKDIR /app
+COPY ./backend ./backend
+COPY ./frontend ./frontend
+COPY ./package.json ./
+COPY ./package-lock.json ./
 
-# Install backend packages
-COPY ./package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
+RUN npm run build
+RUN rm -rf ./frontend
 
-# Generate Prisma client
-COPY prisma ./prisma/
-RUN npx prisma generate
-
-# Copy server files and run it
-COPY . .
 EXPOSE 3000
-CMD ["node", "./src/app.mjs"]
+
+CMD ["npm", "run", "backend:run"]
