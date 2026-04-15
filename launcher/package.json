@@ -4,12 +4,19 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "workspaces": ["api", "web"],
+  "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "api:run": "npm run dev -w api", 
-    "web:dev": "npm run dev -w web", 
+    "api:run": "npm run dev -w api",
+    "web:dev": "npm run dev -w web",
     "build": "npm run build -w web"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }

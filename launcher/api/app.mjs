@@ -6,9 +6,12 @@ import cors from "cors";
 import options from './cors_options.js';
 import { randomUUID } from 'crypto';
 import cron from 'node-cron'
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express()
-const port = 4000
+const port = process.env.PORT;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
