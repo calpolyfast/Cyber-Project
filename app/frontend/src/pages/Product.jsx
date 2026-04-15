@@ -5,7 +5,10 @@ import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
 import timeAgo from "../util/timeAgo";
 import { AuthContext } from "../components/AuthContext";
 import { postReview } from "../api/reviews.mjs";
+<<<<<<< HEAD
 import { useRef } from "react";
+=======
+>>>>>>> frontend/launcher
 
 const RatingStars = ({ stars }) => {
   const rating = Number(stars)
@@ -98,7 +101,11 @@ const Reviews = ({ reviews }) => {
                             <RatingStars stars={review.stars} />
                             <span className="text-sm text-gray-300"> { timeAgo(review.createdAt) } </span>
                         </header>
+<<<<<<< HEAD
                         <p className="text-sm text-gray-900" dangerouslySetInnerHTML={{__html: review.comment}}></p>
+=======
+                        <p className="text-sm text-gray-900"> { review.comment } </p>
+>>>>>>> frontend/launcher
                     </li>
                 ))
             }
@@ -111,12 +118,16 @@ const AddReview = ({ productId, addReviewToList }) => {
     const [writingReview, setWritingReview] = useState(false)
     const [comment, setComment] = useState("")
     const [numberOfStars, setNumberOfStars] = useState(0.0)
+<<<<<<< HEAD
     const [statusMessage, setStatusMessage] = useState("");
     const inputRef = useRef(null)
+=======
+>>>>>>> frontend/launcher
 
     async function handleSubmit(e) {
         e.preventDefault()
 
+<<<<<<< HEAD
         // Sanitize review on the frontend
         const cleaned = comment.replace(/[<>"]/g, "");
 
@@ -140,11 +151,28 @@ const AddReview = ({ productId, addReviewToList }) => {
             inputRef.current.focus()
         }
     }, [writingReview])
+=======
+        try {
+            const res = await postReview(productId, comment, numberOfStars)
+            console.log(res.data)
+            addReviewToList(res.data)
+        }
+        catch(err) {
+            console.error(err)
+        }
+
+        setWritingReview(false)
+    }
+>>>>>>> frontend/launcher
 
     if (!writingReview) {
         return (
             <div className="flex flex-row items-center border-b border-b-gray-400 cursor-text" onClick={ () => setWritingReview(true) }>
+<<<<<<< HEAD
                 <p>Add Review</p>
+=======
+                Add Review
+>>>>>>> frontend/launcher
             </div>
         )
     }
@@ -171,12 +199,18 @@ const AddReview = ({ productId, addReviewToList }) => {
                     setComment(el.value)
                 }}
                 placeholder="Write your review..."
+<<<<<<< HEAD
                 ref={inputRef}
+=======
+>>>>>>> frontend/launcher
         />
             <nav className="flex flex-row justify-between items-center gap-2 py-2">
                 <StarRatingInput value={numberOfStars} onChange={setNumberOfStars} />
                 <div className="flex items-center gap-2">
+<<<<<<< HEAD
                     <p className="text-red-500">{statusMessage}</p>
+=======
+>>>>>>> frontend/launcher
                     <button 
                         type="submit" 
                         className="bg-primary text-white px-4 py-2 rounded-full cursor-pointer"

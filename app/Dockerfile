@@ -6,7 +6,7 @@ COPY ./package*.json ./
 RUN npm ci --omit=dev
 
 # Generate Prisma client
-COPY ./prisma ./prisma/
+COPY prisma ./prisma/
 RUN npx prisma generate
 
 # Copy server files and run it

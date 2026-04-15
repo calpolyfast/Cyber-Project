@@ -55,7 +55,7 @@ spec:
                         value: "${JWT_SECRET}"
                 
                 - name: browser
-                  image: playwright-browser:latest
+                  image: ${PLAYWRIGHT_IMAGE}
                   imagePullPolicy: Never
                   command: ["sleep", "infinity"]
 ---
