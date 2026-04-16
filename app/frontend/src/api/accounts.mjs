@@ -1,24 +1,15 @@
-const API_BASE_URL = import.meta.env.API_BASE_URL;
-import axios from "axios";
+import api from "./axios.mjs"
 
 export const getProfile = () => {
-    return axios.get(`${API_BASE_URL}/profile`, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    return api.get('/accounts/me')
 }
 
-export const deleteAccount = (account) => {
-    return axios.post(`${API_BASE_URL}/deleteAccount`, account);
+export const deleteAccount = () => {
+    return api.delete('/accounts/')
 }
 
 export const updateProfile = (account) => {
-    return axios.get(`${API_BASE_URL}/updateAccount`, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    return api.put('/accounts/', account);
 }
 
 

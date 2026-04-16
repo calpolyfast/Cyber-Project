@@ -46,8 +46,6 @@ export const loginController = async (req, res) => {
         FROM "User"
         WHERE username = '${username}'
       `
-
-      console.log(query)
   
       // Use unsafe raw query to allow for potential SQL injection vulnerability
       const users = await prisma.$queryRawUnsafe(query)

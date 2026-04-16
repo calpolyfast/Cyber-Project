@@ -12,6 +12,7 @@ import UserRouter from './users/users.routes.js'
 import VulnerabilityGroupRouter from './vulnerabilityGroups/vulnerabilityGroups.routes.js'
 import VulnerabilityRouter from './vulnerabilities/vulnerabilities.routes.js'
 import ProductRouter from './products/products.routes.js';
+import AccountRouter from './accounts/accounts.routes.js'
 import OrderRouter from './orders/orders.routes.js'
 import InvoiceRouter from './invoices/invoices.routes.js'
 import ReviewRouter from './reviews/review.routes.js'
@@ -30,6 +31,7 @@ app.use(cors(options))
 app.use(cookieParser())
 
 app.use('/api/users', UserRouter)
+app.use('/api/accounts', AccountRouter)
 app.use('/api/products', ProductRouter)
 app.use('/api/orders', OrderRouter)
 app.use('/api/invoices', InvoiceRouter)

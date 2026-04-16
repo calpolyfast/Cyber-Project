@@ -5,7 +5,7 @@ import {
     updateProduct, deleteProduct 
 } from './products.controllers.js';
 import upload from '../middleware/multer.js';
-import verifyOwner from '../middleware/verifyOwner.js';
+import verifyAdmin from '../middleware/verifyAdmin.js';
 
 const productsRouter = Router()
 
@@ -13,7 +13,7 @@ productsRouter.get('/', getAllProducts)
 productsRouter.get('/search', getProductBySearchName)
 productsRouter.get('/:id', getProductById)
 
-productsRouter.use(verifyOwner)
+productsRouter.use(verifyAdmin)
 productsRouter.delete('/:id', deleteProduct)
 // Add middleware 'upload.single('image')' to handle image upload
 productsRouter.post('/', upload.single('image'), createProduct)
