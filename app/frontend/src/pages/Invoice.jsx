@@ -27,14 +27,14 @@ const Invoice = () => {
         getInvoiceByOrderID(searchParams.get("id"))
             .then((res) => {
                 setOrderInfo(res.data)
-                setLoaded(true)
             })
+            .finally(() => { setLoaded(true) })
     }, [])
 
     return <ContentWrapper>
         <div className="flex flex-col items-center align-middle gap-4 p-4">
             <div className="flex flex-col w-full p-4 gap-2 bg-primary">
-                <h1 className="text-4xl font-bold text-center text-white p-2">Order # {loaded ? orderInfo.order.id : null}</h1>
+                <h1 className="text-4xl font-bold text-center text-white p-2">{loaded ? `Order # ${orderInfo.order.id}` : "Retrieving order..."}</h1>
                 <p className="text-white">Date Ordered: {loaded ? (new Date(orderInfo.createdAt).toLocaleString()) : null}</p>
                 <p className="text-white">Customer Email: {loaded ? orderInfo.email : null} </p>
                 <p className="text-white">Customer Username: {loaded ? orderInfo.username : null} </p>

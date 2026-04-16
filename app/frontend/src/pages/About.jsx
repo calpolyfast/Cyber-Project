@@ -38,7 +38,7 @@ const About = () => {
                 <div className="bg-white font-sans border-2 border-secondary rounded-sm p-1 text-black text-center *:p-2">The “official” website for CPP Farm Store, allowing people to shop online for drive up orders with ease. This website is built using only the highest quality of AI slop, so security is sure to not be an issue!</div>
             </div>
             
-            <a href="/" className="bg-primary-light text-2xl p-3 text-white w-max">Start Shopping!</a>
+            <a href="/" className="bg-primary-light text-2xl p-3 text-white w-max transition hover:scale-110 duration-200 ease-in-out cursor-pointer">Start Shopping!</a>
 
             <div className="flex flex-col p-4 w-full gap-2 bg-primary">
                 <h1 className="w-full text-center text-4xl">Credits</h1>

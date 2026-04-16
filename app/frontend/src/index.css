@@ -21,11 +21,33 @@
 }
 
 .page-wrapper {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    padding: 40px;
-    width: 100%;
-    background-color: var(--color-bg);
-    overflow-y: auto;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  padding: 16px;
+  width: 100%;
+  background-color: var(--color-bg);
+  overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+  .page-wrapper {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding: 24px 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-wrapper {
+    padding: 24px 40px;
+  }
+}
+
+.btn-interactive {
+  @apply transition enabled:hover:scale-115 duration-200 ease-in-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
 }

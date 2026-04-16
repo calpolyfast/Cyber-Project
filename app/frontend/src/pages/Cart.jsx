@@ -75,20 +75,22 @@ const OrderEntry = ({ cartObject }) => {
     }
 
     return <li className="flex flex-row gap-1">
-            <img src={cartObject.item.image} className="flex-2"></img>
+            <div className="flex flex-2 justify-center items-center">
+                <img src={cartObject.item.image} className="h-fit"></img>
+            </div>
             <div className="flex-2 text-xl text-center align-bottom">
                 <h1 className="text-2xl text-dark">{cartObject.item.name}</h1>
                 <p>{"$" + cartObject.item.price}</p>
             </div>
             <div className="flex-1">
                 <div className="flex flex-row items-center justify-between gap-2 p-2">
-                    <button className="text-4xl" onClick={decreaseQuantity}>{"<"}</button>
+                    <button className="text-4xl text-primary btn-interactive" onClick={decreaseQuantity}>{"<"}</button>
                     <input className="text-xl w-full text-center min-w-4" ref={inputRef} value={quantity} onKeyDown={handleKeyDown} onBlur={() => {handleSubmit()}} onChange={(e) => {setQuantity(e.target.value)}} />
-                    <button className="text-4xl" onClick={increaseQuantity}>{">"}</button>
+                    <button className="text-4xl text-primary btn-interactive" onClick={increaseQuantity}>{">"}</button>
                 </div>
             </div>
             <div className="flex flex-1 items-center justify-center">
-                <button className="aspect-square size-10 rounded-lg text-2xl hover:text-white text-primary-light cursor-pointer" onClick={() => {updateCart(cartObject.item, 0)}}>
+                <button className="aspect-square size-10 rounded-lg text-2xl hover:text-red-500 text-primary-light cursor-pointer" onClick={() => {updateCart(cartObject.item, 0)}}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%" aria-label="Delete" role="img">
                     <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                         <circle cx="12" cy="12" r="9" />
@@ -102,7 +104,7 @@ const OrderEntry = ({ cartObject }) => {
 }
 
 const OrderList = ({ cart }) => {
-    return <div className="flex flex-3 flex-col p-2 bg-white rounded-md text-dark">
+    return <div className="flex flex-3 flex-col p-2 bg-white rounded-md text-dark overflow-y-auto">
         <h2 className="text-4xl text-center">Your Items</h2>
         <ol className="flex flex-col gap-2">
             {cart.map((cartObject, index) => {
@@ -133,7 +135,7 @@ const OrderSummary = ({ cart, clearCart, totalItems, total, orderComplete, setOr
         
     }
 
-    return <div className="flex flex-1 flex-col p-2 justify-between h-[80lvh] bg-white rounded-md text-dark">
+    return <div className="flex flex-1 flex-col p-2 justify-between h-full bg-white rounded-md text-dark overflow-y-auto">
         <div>
             <h2 className="text-2xl text-center">Order Summary</h2>
             <ol className="flex flex-col gap-1" >
@@ -148,9 +150,9 @@ const OrderSummary = ({ cart, clearCart, totalItems, total, orderComplete, setOr
             </div>
             <button 
                 disabled={orderButtonDisabled} 
-                onClick={handlePlaceOrder} className={`${!orderComplete ? "animate-pulse" : ""} ${orderButtonDisabled ? "opacity-50" : ""} bg-primary-light rounded-md p-2 text-3xl w-full cursor-pointer`}>
+                onClick={handlePlaceOrder} className="bg-primary-light rounded-md p-2 text-3xl w-full btn-interactive">
                     {orderComplete ? "Place Order" : "..."}
-                </button>
+            </button>
         </div>
     </div>
 }
@@ -166,7 +168,7 @@ const Cart = () => {
 
     return <ContentWrapper>
             <h1 className="text-4xl text-center border-b font-bold">Shopping Cart</h1>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 h-full">
                 <OrderList cart={cart}></OrderList>
                 <OrderSummary orderComplete={orderComplete} clearCart={clearCart} totalItems={totalItems} setOrderComplete={setOrderComplete} total={total} cart={cart}></OrderSummary>
             </div>
