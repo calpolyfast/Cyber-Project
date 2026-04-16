@@ -13,6 +13,7 @@ import { CartProvider } from "./components/CartContext"
 import Orders from "./pages/Orders"
 import MobileNav from "./components/MobileNav"
 import Product from "./pages/Product"
+import Invoice from "./pages/Invoice"
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
                         } />
                         <Route path={"/product/:productId"} element={
                             <Product />
+                        } />
+                        <Route path={"/invoice"} element={
+                            <ProtectedRoute><Invoice /></ProtectedRoute>
                         } />
                         <Route path={"/about"} element={
                             <About />
