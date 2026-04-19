@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/api', (req, res) => {
-  res.send('Hello World!');
+  res.status(200).send("ok");
 });
 
 app.get('/api/db-test', async (req, res) => {
@@ -60,12 +60,17 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
-app.listen(port, async () => {
-  // Populate the database with some initial data for testing purposes
-    execSync("npx prisma migrate dev", {
-        stdio: "inherit"
-    });
-    await populateUsersAndProducts()
+const initialize = async () => {
+  execSync("npx prisma migrate dev", {
+      stdio: "inherit"
+  });
 
-    console.log(`Server listening on http://localhost:${port}`);
-});
+  // Populate the database with some initial data
+  await populateUsersAndProducts()
+
+  app.listen(port, async () => {
+      console.log(`Server listening on http://localhost:${port}`);
+  });  
+}
+
+initialize()
