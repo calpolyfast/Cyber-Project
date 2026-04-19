@@ -17,7 +17,7 @@ import OrderRouter from './orders/orders.routes.js'
 import InvoiceRouter from './invoices/invoices.routes.js'
 import ReviewRouter from './reviews/review.routes.js'
 
-import { populateUsersAndProducts, populateOrdersForUser } from '../scripts/populateDB.js'
+import { populateUsers, populateProducts } from '../scripts/populateDB.js'
 
 dotenv.config();
 
@@ -48,26 +48,14 @@ app.get('/api', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/api/db-test', async (req, res) => {
-  try {
-    const users = await prisma.user.findMany()
-    if (users.length > 0) {
-      populateOrdersForUser(users[0].id)
-      console.log(`Created orders for user ${users[0].username}`)
-    }
-    res.status(200).json({ message: "Database connection successful", users })
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database connection failed' });
-  }
-});
-
 app.listen(port, async () => {
-  // Populate the database with some initial data for testing purposes
+    // Populate the database with some initial data for testing purposes
     execSync("npx prisma migrate dev", {
         stdio: "inherit"
     });
-    await populateUsersAndProducts()
+
+    await populateUsers()
+    await populateProducts()
 
     console.log(`Server listening on http://localhost:${port}`);
 });
