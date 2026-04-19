@@ -163,7 +163,9 @@ const Home = () => {
                         products.map((product, index) => {
                             return <ProductListing key={index} item={product}/>
                         }) :
-                        Array(8).fill(<PlaceholderListing />)
+                        Array.from({ length: 8 }).map((_, index) => (
+                            <PlaceholderListing key={index} />
+                        ))
                 }
             </div>
         </ContentWrapper>
