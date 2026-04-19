@@ -33,7 +33,7 @@ const Home = () => {
         }
     }
 
-    return <div className="flex flex-col justify-evenly w-full h-full py-8 bg-white text-gray-800">
+    return <div className="flex flex-col gap-4 justify-evenly w-full h-full py-8 bg-white text-gray-800">
         <header className="flex flex-col items-center font-serif px-8 gap-4">
             <h1 className="text-6xl text-center"> FAST Cyber Pentesting Lab </h1>
             <h3 className="text-4xl text-center"> Cyber Security Research Team </h3>
@@ -100,7 +100,7 @@ function NavButton({ destination }) {
     }
     if(destination === "labs") {   
         return (
-            <div className="flex flex-col items-center gap-2 cursor-pointer
+            <a href="/labs" className="flex flex-col items-center gap-2 cursor-pointer
                             transform hover:scale-105 transition-transform duration-300 ease-in-out">
                 <h3 className="text-3xl text-center font-serif"> Labs </h3>
                 <div className="flex justify-center items-center h-30 md:h-35 lg:h-50 aspect-square bg-white rounded-md border border-secondary">
@@ -108,12 +108,12 @@ function NavButton({ destination }) {
                         <FaComputer className="text-gray-700 h-full w-full"/>
                     </div>
                 </div>
-            </div>
+            </a>
         )
     }
     if(destination === "flags") {   
         return (
-            <div className="flex flex-col items-center gap-2 cursor-pointer
+            <a href="/flags" className="flex flex-col items-center gap-2 cursor-pointer
                             transform hover:scale-105 transition-transform duration-300 ease-in-out">
                 <h3 className="text-3xl text-center font-serif"> Flags </h3>
                 <div className="flex justify-center items-center h-30 md:h-35 lg:h-50 aspect-square bg-white rounded-md border border-secondary">
@@ -121,7 +121,7 @@ function NavButton({ destination }) {
                         <FaFlag className="text-gray-700 h-full w-full"/>
                     </div>
                 </div>
-            </div>
+            </a>
         )
     }
 }
