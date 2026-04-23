@@ -17,6 +17,7 @@
     "build": "npm run build -w web"
   },
   "dependencies": {
+    "@kubernetes/client-node": "^1.4.0",
     "dotenv": "^17.4.2"
   }
 }

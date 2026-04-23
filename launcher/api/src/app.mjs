@@ -7,12 +7,18 @@ import options from './cors_options.js';
 import { randomUUID } from 'crypto';
 import cron from 'node-cron'
 import * as dotenv from 'dotenv';
+import k8s from '@kubernetes/client-node';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express()
 const port = 3000
 const BASE_URL = "localhost"
+const kc = new k8s.KubeConfig();
+kc.loadFromDefault();
+const k8sApi = kc.makeApiClient(k8s.AppsV1Api);
+const NAMESPACE = 'launcher';
+const ONE_HOUR_MS = 60 * 60 * 1000;
 
 app.use(cors(options))
 app.use(express.json())
@@ -109,62 +115,34 @@ app.get('/api', (req, res) => {
 // Every hour, delete all chamber deployments that are older than 1 hour
 cron.schedule('0 * * * *', async () => {
     try {
-        let output = ''
-        const getProc = spawn("kubectl", 
-            [
-                'get',
-                'deployments',
-                '--no-headers',
-                '-o',
-                'custom-columns=NAME:.metadata.name,AGE:.metadata.creationTimestamp'
-            ]
-        )
+        console.log('Starting cleanup cron job...');
 
-        getProc.stdout.on('data', (data) => {
-            output += data.toString()
-        })
+        const response = await k8sApi.listNamespacedDeployment(NAMESPACE);
+        const allDeployments = response.body.items;
 
-        getProc.stderr.on('data', (data) => {
-            console.error(`STDERR: ${data}`)
-            rej("ERROR")
-        })
+        const now = new Date();
+        const toDelete = allDeployments.filter(dep => {
+            const name = dep.metadata.name;
+            const created = new Date(dep.metadata.creationTimestamp);
+            
+            return name.startsWith('chamber-') && (now - created) > ONE_HOUR_MS;
+        });
 
-        // Wait for the process to finish and handle errors
-        await new Promise((res, rej) => {
-            getProc.on('close', (code) => {
-                    if (code === 0) res()
-                    else rej(new Error(errorOutput || `kubectl exited with code ${code}`))
-                })
-            getProc.on('error', rej)
-        })
+        console.log(`Found ${toDelete.length} stale deployments to delete.`);
 
-        const deployments = output.split("\n")
-            .map(dep => dep.trim())
-            .filter(dep => dep !== "")
-            .map(line => {
-                const [name, age] = line.split(/\s+/)
-                return { name, age: new Date(age) }
-            })
-            .filter(dep => dep.name.startsWith("chamber-") && new Date() - new Date(dep.age) > 1000)
+        await Promise.all(toDelete.map(async (dep) => {
+            const name = dep.metadata.name;
+            try {
+                await k8sApi.deleteNamespacedDeployment(name, NAMESPACE);
+                console.log(`Successfully deleted deployment: ${name}`);
+            } catch (err) {
+                console.error(`Failed to delete ${name}:`, err.response?.body?.message || err.message);
+            }
+        }));
 
-        // Delete deployments in parallel
-        await Promise.all(deployments.map(dep => {
-            return new Promise((res, rej) => {
-                const delProc = spawn("kubectl", ["delete", "deployment", dep.name]);
-                delProc.stdout.on('data', (dep) => console.log(dep.toString()));
-                delProc.stderr.on('data', (dep) => console.error(dep.toString()));
-                delProc.on('close', (code) => {
-                    if (code === 0) res();
-                    else rej(new Error(`Failed to delete deployment ${dep.name}`));
-                })
-                delProc.on('error', rej);
-            })
-        }))
+    } catch (err) {
+        console.error('Error in cron job:', err.response?.body?.message || err.message);
     }
-    catch(err){
-        console.error(err)
-    }
-
 })
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -174,5 +152,13 @@ app.use((req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Launcher listening on port ${port}`)
+    try {
+        const res = await k8sApi.listNamespacedDeployment(namespace);
+        console.log("Successfully fetched deployments from K8s API");
+    } catch (err) {
+        // The library returns detailed error bodies from the K8s API
+        console.error('Error hitting K8s API:', err.response?.body || err.message);
+        throw err;
+    }
+    console.log(`Launcher listening on port ${port}`)
 })
