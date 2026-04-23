@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createContext } from "react";
-import { getStoredUser, postLogin, postRegister, storeUser } from "../api/auth.mjs";
+import { getStoredUser, removeStoredUser, postLogin, postRegister, storeUser } from "../api/auth.mjs";
 
 export const AuthContext = createContext({})
 
@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setIsAuthenticated(false)
         setUser({})
+        removeStoredUser()
     }
 
     const register = async (username, email, password) => {

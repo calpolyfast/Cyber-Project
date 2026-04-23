@@ -21,7 +21,7 @@ function App() {
         <AuthProvider>
             <CartProvider>
                 <main className="full-screen">
-                    <NavBar></NavBar>
+                    <NavBar />
                     <Routes>
                         <Route index element={
                             <Home />
