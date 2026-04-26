@@ -35,11 +35,9 @@ const Home = () => {
     }
 
     const handleDeleteChamber = async () => {
-        if (!chamberId) return
-
         setDeletingChamber(true)
         try {
-            const res = await deleteChamber(chamberId)
+            const res = await deleteChamber()
             console.log(res.data.message)
 
             // Clear the local chamber state
@@ -101,19 +99,19 @@ const Home = () => {
 
 function NavButton({ destination }) {
     const { chamberId } = useContext(AppContext)
+    const navigate = useNavigate()
 
-    if(destination === "store") {   
-        const chamberUrl = chamberId ? `http://${chamberId}.${import.meta.env.VITE_CHAMBER_URL}` : import.meta.env.VITE_CHAMBER_URL || "localhost:3000"
-        const Wrapper = chamberId ? 'a' : 'div';
-        console.log(chamberUrl)
+    if(destination === "store") {
+        // Navigate directly to the redirect api route   
+        const handleNavigate = async () => {
+            window.open("/api/redirect", "_blank")
+        }
+
+        const chamberExists = chamberId ? true : false
 
         return (
-            <Wrapper
-                {...(chamberId && {
-                href: chamberUrl,
-                target: "_blank",
-                rel: "noopener noreferrer"
-                })}
+            <div
+                onClick={chamberExists ? handleNavigate : null}
                 className={`flex flex-col items-center gap-2
                 transform transition-transform duration-300 ease-in-out
                 ${!chamberId 
@@ -128,13 +126,18 @@ function NavButton({ destination }) {
                         <FaStoreAlt className="text-gray-700 h-full w-full" />
                     </div>
                 </div>
-        </Wrapper>
+            </div>
         );
     }
     if(destination === "labs") {   
+        const handleNavigate = () => {
+            navigate("/labs")
+        }
         return (
             <div className="flex flex-col items-center gap-2 cursor-pointer
-                            transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                            transform hover:scale-105 transition-transform duration-300 ease-in-out"
+                            onClick={handleNavigate}
+            >
                 <h3 className="text-3xl text-center font-serif"> Labs </h3>
                 <div className="flex justify-center items-center h-30 md:h-35 lg:h-50 aspect-square bg-white rounded-md border border-secondary">
                     <div className="h-[80%] aspect-square">
@@ -145,9 +148,14 @@ function NavButton({ destination }) {
         )
     }
     if(destination === "flags") {   
+        const handleNavigate = () => {
+            navigate("/flags")
+        }
         return (
             <div className="flex flex-col items-center gap-2 cursor-pointer
-                            transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                            transform hover:scale-105 transition-transform duration-300 ease-in-out"
+                            onClick={handleNavigate}
+            >
                 <h3 className="text-3xl text-center font-serif"> Flags </h3>
                 <div className="flex justify-center items-center h-30 md:h-35 lg:h-50 aspect-square bg-white rounded-md border border-secondary">
                     <div className="h-[80%] aspect-square">

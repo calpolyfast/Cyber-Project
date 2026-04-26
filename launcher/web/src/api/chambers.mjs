@@ -5,7 +5,7 @@ export const createChamber = async () => {
     return res
 }
 
-export const deleteChamber = async (id) => {
-    const res = await api.delete(`/delete-chamber/${id}`)
+export const deleteChamber = async () => {
+    const res = await api.delete(`/delete-chamber/`)
     return res
 }

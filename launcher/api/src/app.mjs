@@ -1,24 +1,30 @@
 import express from 'express'
+import dotenv from 'dotenv'
 import { spawn } from "child_process";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from "cors";
 import options from './cors_options.js';
-import { randomUUID } from 'crypto';
 import cron from 'node-cron'
+import { randomUUID } from 'crypto';
+import cookieParser from 'cookie-parser'
+import { addChamberIdToCookie, extractChamberId } from './cookies.js'
+
+dotenv.config()
 
 const app = express()
 
 // IMPORTANT: When running the chamber deployment with kubernetes,
 // the port must be set to 3000 because the chamber.yaml file is configured to forward to port 3000
-const port = 3000
+const port = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors(options))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(cors(options))
+app.use(cookieParser())
 
 app.get('/api/', (req, res) => {
   res.send('Hello World!')
@@ -55,6 +61,7 @@ app.post('/api/new-chamber', (req, res) => {
 
         proc.on("close", () => {
             clearTimeout(timeoutID)
+            addChamberIdToCookie(res, uuid)
             return res.status(200).json({ id: uuid, message: `Chamber created with id ${uuid}` })
         })
     }
@@ -64,8 +71,20 @@ app.post('/api/new-chamber', (req, res) => {
     }
 })
 
-app.delete('/api/delete-chamber/:id', async (req, res) => {
-    const { id } = req.params
+// Additional api routes will require a chamberId. The extractChamberId middleware will attach the cookie field to the request object
+app.use('/api', extractChamberId)
+
+// This route redirects the client to the url of their chamber (farm store)
+app.get('/api/redirect', (req, res) => {
+    const chamberId = req.chamberId
+    const base = process.env.LAUNCHER_URL || "localhost:3000";
+    const protocol = base.includes("localhost") ? "http" : "https";
+    const url = `${protocol}://${chamberId}.${base}`;
+    res.redirect(301, url); 
+});
+
+app.delete('/api/delete-chamber/', async (req, res) => {
+    const id = req.chamberId
 
     // Verify the id corresponds to an existing deployment
     try {
