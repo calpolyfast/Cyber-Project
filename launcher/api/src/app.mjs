@@ -7,7 +7,7 @@ import options from './cors_options.js';
 import { randomUUID } from 'crypto';
 import cron from 'node-cron'
 import * as dotenv from 'dotenv';
-import k8s from '@kubernetes/client-node';
+import * as k8s from '@kubernetes/client-node';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -151,14 +151,15 @@ app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.listen(port, () => {
+const probeKubeAPI = async () => {
     try {
-        const res = await k8sApi.listNamespacedDeployment(namespace);
-        console.log("Successfully fetched deployments from K8s API");
+        const res = await k8sApi.listNamespacedDeployment(NAMESPACE)
     } catch (err) {
-        // The library returns detailed error bodies from the K8s API
-        console.error('Error hitting K8s API:', err.response?.body || err.message);
-        throw err;
+        console.error('Error hitting K8s API');
     }
+}
+
+app.listen(port, () => {
+    probeKubeAPI()
     console.log(`Launcher listening on port ${port}`)
 })

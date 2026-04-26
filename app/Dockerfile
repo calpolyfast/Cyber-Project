@@ -10,7 +10,7 @@ RUN npm ci
 RUN npm run build
 RUN rm -rf ./frontend
 
-RUN npx prisma generate --schema ./backend/prisma/schema.prisma
+RUN cd ./backend && npx prisma generate
 
 EXPOSE 3000
 
