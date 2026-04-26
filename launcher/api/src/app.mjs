@@ -27,7 +27,7 @@ app.get('/api/', (req, res) => {
 app.post('/api/new-chamber', (req, res) => {
 
     // Configure current directory of deploy.sh
-    const scriptDir = path.resolve(__dirname, "../../../infra/scripts");
+    const scriptDir = path.resolve(__dirname, "../infra_copy/scripts")
     const scriptName = "deploy.sh";
 
     const uuid = randomUUID()
@@ -49,7 +49,7 @@ app.post('/api/new-chamber', (req, res) => {
         proc.stderr.on('data', (data) => {
             console.error(`STDERR: ${data}`);
             if (!res.headersSent) {
-                res.status(500).json({ error: "Failed to start deployment" });
+                res.status(500).json({ error: "Failed to start deployment", details: data.toString() });
             }
         })
 

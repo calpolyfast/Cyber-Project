@@ -12,4 +12,4 @@ RUN npx prisma generate
 # Copy server files and run it
 COPY . .
 EXPOSE 3000
-CMD ["node", "./src/app.mjs"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node ./src/app.mjs"]
