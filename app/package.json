@@ -6,9 +6,12 @@
   "author": "",
   "type": "commonjs",
   "main": "index.js",
-  "workspaces": ["backend", "frontend"],
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
-    "backend:run": "npm run dev -w backend", 
+    "backend:run": "npm run dev -w backend",
     "frontend:dev": "npm run dev -w frontend",
     "build": "npm run build -w frontend"
   }

@@ -100,7 +100,7 @@ const ProductListing = ({ item }) => {
             </div>
             <div className="flex overflow-hidden w-full h-60 justify-center">
                 { imageLoaded
-                    ? <img src="https://placehold.co/100" className="flex-none w-[200px] h-[200px] max-w-none" onError={() => {setImageLoaded(false)}} alt="placeholder"></img>
+                    ? <img src={item.image.url} className="flex-none w-[200px] h-[200px] max-w-none" onError={() => {setImageLoaded(false)}} alt="placeholder"></img>
                     : <div></div>
                 }
             </div>

@@ -8,7 +8,7 @@ const Admin = () => {
         const formData = new FormData();
         const fileInput = form.image;
 
-        formData.append("file", fileInput.files[0]);
+        formData.append("image", fileInput.files[0]);
         formData.append("name", form.name.value);
         formData.append("price", form.price.value);
         formData.append("visible", form.visible[0].checked);

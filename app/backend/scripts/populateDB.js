@@ -9,7 +9,7 @@ export const populateUsersAndProducts = async () => {
             username: "admin",
             password: "admin123",
             email: "admin@example.com",
-            role: "User",
+            role: "Admin",
         },
         {
             username: "john_doe",
@@ -40,52 +40,112 @@ export const populateUsersAndProducts = async () => {
         {
             name: "Summer squash",
             price: 12.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559830/image7_kg93qt.jpg",
+                    public_id: "image11_r4fvrb.png",
+                }
+            }
         },
         {
             name: "Tomatoes",
             price: 3.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559829/image2_fps5d0.jpg",
+                    public_id: "image2_fps5d0.jpg",
+                }
+            }
         },
         {
             name: "Peppers",
             price: 4.49,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559829/image8_bycvaw.jpg",
+                    public_id: "image8_bycvaw.jpg",
+                }
+            }
         },
         {
             name: "Cucumbers",
             price: 2.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559829/image12_nzco1g.jpg",
+                    public_id: "image12_nzco1g.jpg",
+                }
+            }
         },
         {
             name: "Eggplant",
             price: 5.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559830/image6_gdjf4x.jpg",
+                    public_id: "image6_gdjf4x.jpg",
+                }
+            }
         },
         {
             name: "Corn",
             price: 1.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559830/image4_zr2zem.jpg",
+                    public_id: "image4_zr2zem.jpg",
+                }
+            }
         },
         {
             name: "Watermelon",
             price: 8.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559830/image10_zw2av4.jpg",
+                    public_id: "image10_zw2av4.jpg",
+                }
+            }
         },
         {
             name: "Dragon Fruit",
             price: 7.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559829/image1_cagx1b.jpg",
+                    public_id: "image1_cagx1b.jpg",
+                }
+            }
         },
         {
             name: "Avocados (Hass, Reed, Lamb Hass)",
             price: 6.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559831/image11_r4fvrb.png",
+                    public_id: "image11_r4fvrb.png",
+                }
+            }
         },
         {
             name: "Ruby Red grapefruit",
             price: 4.99,
-            visible: true
+            visible: true, 
+            image: {
+                create: {
+                    url: "https://res.cloudinary.com/dwctdab9a/image/upload/v1776559830/image5_shlxqq.jpg",
+                    public_id: "image5_shlxqq.jpg",
+                }
+            }
         }
     ]
 
