@@ -1,23 +1,19 @@
 {
   "name": "launcher",
   "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "./web/", 
+    "./api/"
+  ],
   "description": "",
   "license": "ISC",
   "author": "",
-  "private": true,
-  "workspaces": [
-    "api",
-    "web"
-  ],
   "type": "commonjs",
-  "main": "index.js",
+  "main": "index.js", 
   "scripts": {
-    "api:run": "npm run dev -w api",
-    "web:dev": "npm run dev -w web",
-    "build": "npm run build -w web"
-  },
-  "dependencies": {
-    "@kubernetes/client-node": "^1.4.0",
-    "dotenv": "^17.4.2"
+    "web:dev": "npm run dev --workspace=web",
+    "api:dev": "npm run dev --workspace=api", 
+    "web:build": "npm run build --workspace=web"
   }
 }

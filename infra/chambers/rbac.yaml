@@ -1,0 +1,30 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: chamber-manager-role
+  namespace: default
+rules:
+  # Allow the app to manage Deployments, Services, and Ingresses
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: chamber-manager-binding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: default # This must match the SA your pod uses
+    namespace: default
+roleRef:
+  kind: Role
+  name: chamber-manager-role
+  apiGroup: rbac.authorization.k8s.io
