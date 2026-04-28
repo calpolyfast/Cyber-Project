@@ -127,27 +127,51 @@ app.delete('/api/delete-chamber/', async (req, res) => {
 
     // If the deployment exists, delete it
     try {
-        const delProc = spawn("kubectl", [
+        const delDeploymentProc = spawn("kubectl", [
             "delete",
             "deployment",
             `chamber-${id}`
         ], {
             stdio: ["ignore", "pipe", "pipe"] // Ignore stdin, pipe stdout and stderr
         })
+        const delServicesProc = spawn("kubectl", [
+            "delete",
+            "services",
+            `chamber-${id}`
+        ])
 
         // Log any errors
-        delProc.stderr.on("data", (data) => {
+        delDeploymentProc.stderr.on("data", (data) => {
+            console.log(data)
+        })
+        delServicesProc.stderr.on("data", (data) => {
             console.log(data)
         })
 
-        await new Promise((res, rej) => {
-            delProc.on('close', (code) => {
-                if (code === 0) res()
-                else rej()
-            })
+        // Wait for both deletion processes to finish
+        await Promise.all([
+            new Promise((res, rej) => {
+                delDeploymentProc.on('close', (code) => {
+                    if (code === 0) res()
+                    else rej()
+                })
 
-            delProc.on('error', rej)
-        })
+                delDeploymentProc.on('error', rej)
+            }), 
+            new Promise((res, rej) => {
+                let stderr = "";
+                delServicesProc.stderr.on("data", (data) => {
+                    stderr += data.toString();
+                });
+
+                delServicesProc.on('close', (code) => {
+                    if (code === 0 || stderr.includes("NotFound")) res()
+                    else rej()
+                })
+
+                delServicesProc.on('error', rej)
+            })
+        ])
 
         return res.status(200).json({ message: `Deployment with id ${id} successfully deleted` })
     }
@@ -185,6 +209,92 @@ app.post('/api/send-link-payload', (req, res) => {
 })
 
 // Every hour, delete all chamber deployments that are older than 1 hour
+cron.schedule('0 * * * *', async () => {
+    try {
+        let output = ''
+        const getProc = spawn("kubectl", 
+            [
+                'get',
+                'deployments',
+                '--no-headers',
+                '-o',
+                'custom-columns=NAME:.metadata.name,AGE:.metadata.creationTimestamp'
+            ]
+        )
+
+        getProc.stdout.on('data', (data) => {
+            output += data.toString()
+        })
+
+        getProc.stderr.on('data', (data) => {
+            console.error(`STDERR: ${data}`)
+            rej("ERROR")
+        })
+
+        // Wait for the process to finish and handle errors
+        await new Promise((res, rej) => {
+            getProc.on('close', (code) => {
+                    if (code === 0) res()
+                    else rej(new Error(errorOutput || `kubectl exited with code ${code}`))
+                })
+            getProc.on('error', rej)
+        })
+
+        const deployments = output.split("\n")
+            .map(dep => dep.trim())
+            .filter(dep => dep !== "")
+            .map(line => {
+                const [name, age] = line.split(/\s+/)
+                return { name, age: new Date(age) }
+            })
+            .filter(dep => dep.name.startsWith("chamber-") && new Date() - new Date(dep.age) > 1000)
+
+        if (deployments.length === 0) return
+
+        // Delete deployments and corresndpong services in parallel
+        await Promise.all(deployments.flatMap(dep => {
+            return [
+                new Promise((res, rej) => {
+                    const delProc = spawn("kubectl", ["delete", "deployment", dep.name]);
+                    delProc.stdout.on('data', (dep) => console.log(dep.toString()));
+                    delProc.stderr.on('data', (dep) => console.error(dep.toString()));
+                    delProc.on('close', (code) => {
+                        if (code === 0) res();
+                        else {
+                            console.error(`Failed to delete deployment ${dep.name}`)
+                        }
+                    })
+                    delProc.on('error', (err) => {
+                        console.error(err)
+                        res()
+                    });
+                }), 
+                // Delete corresponding service
+                new Promise((res, rej) => {
+                    const delProc = spawn("kubectl", ["delete", "service", dep.name]);
+                    delProc.stdout.on('data', (dep) => console.log(dep.toString()));
+                    delProc.stderr.on('data', (dep) => console.error(dep.toString()));
+                    delProc.on('close', (code) => {
+                        if (code === 0) res();
+                        else {
+                            console.error(`Failed to delete service ${dep.name}`)
+                        }
+                    })
+                    delProc.on('error', (err) => {
+                        console.error(err)
+                        res()
+                    });
+                }), 
+            ]
+        }))
+    }
+    catch(err){
+        console.error(err)
+    }
+
+})
+
+// Similar to the other cron job, we delete all services older than
 cron.schedule('0 * * * *', async () => {
     try {
         let output = ''
