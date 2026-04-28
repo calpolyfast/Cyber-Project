@@ -62,12 +62,16 @@ app.post('/api/new-chamber', (req, res) => {
         proc.on("close", () => {
             clearTimeout(timeoutID)
             addChamberIdToCookie(res, uuid)
-            return res.status(200).json({ id: uuid, message: `Chamber created with id ${uuid}` })
+            if (!res.headersSent) {
+                return res.status(200).json({ id: uuid, message: `Chamber created with id ${uuid}` })
+            }
         })
     }
     catch(err){
         console.error(err)
-        res.status(500).json({ error: "Something went wrong" })
+        if (!res.headersSent) {
+            res.status(500).json({ error: "Something went wrong" })
+        }
     }
 })
 
@@ -77,7 +81,7 @@ app.use('/api', extractChamberId)
 // This route redirects the client to the url of their chamber (farm store)
 app.get('/api/redirect', (req, res) => {
     const chamberId = req.chamberId
-    const base = process.env.LAUNCHER_URL || "localhost:3000";
+    const base = process.env.BASE_DOMAIN || "localhost:3000";
     const protocol = base.includes("localhost") ? "http" : "https";
     const url = `${protocol}://${chamberId}.${base}`;
     res.redirect(301, url); 

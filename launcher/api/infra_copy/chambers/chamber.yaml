@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: chamber-${INSTANCE_ID}
+    name: "chamber-${INSTANCE_ID}"
     labels:
         app: chamber
-        instance: ${INSTANCE_ID}
+        instance: "${INSTANCE_ID}"
 spec:
     replicas: 1
     selector:
         matchLabels:
             app: chamber
-            instance: ${INSTANCE_ID}
+            instance: "${INSTANCE_ID}"
     template:
         metadata:
             labels:
                 app: chamber
-                instance: ${INSTANCE_ID}
+                instance: "${INSTANCE_ID}"
         spec:
             volumes:
                 - name: pgdata
@@ -37,7 +37,7 @@ spec:
                         mountPath: /var/lib/postgresql/data
 
                 - name: app
-                  image: ${APP_IMAGE}
+                  image: "${APP_IMAGE}"
                   imagePullPolicy: Always
                   ports:
                       - containerPort: 3000
@@ -55,23 +55,23 @@ spec:
                         value: "${JWT_SECRET}"
                 
                 - name: browser
-                  image: ${PLAYWRIGHT_IMAGE}
+                  image: "${PLAYWRIGHT_IMAGE}"
                   imagePullPolicy: Always
                   command: ["sleep", "infinity"]
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: chamber-${INSTANCE_ID}
+    name: "chamber-${INSTANCE_ID}"
     annotations:
       kubernetes.io/ingress.class: traefik
     labels:
         app: chamber
-        instance: ${INSTANCE_ID}
+        instance: "${INSTANCE_ID}"
 spec:
     selector:
         app: chamber
-        instance: ${INSTANCE_ID}
+        instance: "${INSTANCE_ID}"
     ports:
         - name: http
           port: 80
@@ -80,20 +80,20 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: chamber-${INSTANCE_ID}
+    name: "chamber-${INSTANCE_ID}"
     labels:
         app: chamber
-        instance: ${INSTANCE_ID}
+        instance: "${INSTANCE_ID}"
 spec:
     ingressClassName: traefik
     rules:
-        - host: ${INSTANCE_ID}.${BASE_DOMAIN}
+        - host: "${INSTANCE_ID}.${BASE_DOMAIN}"
           http:
               paths:
                   - path: /
                     pathType: Prefix
                     backend:
                         service:
-                            name: chamber-${INSTANCE_ID}
+                            name: "chamber-${INSTANCE_ID}"
                             port:
                                 number: 80

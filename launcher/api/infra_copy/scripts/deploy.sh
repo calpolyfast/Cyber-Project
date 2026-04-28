@@ -9,8 +9,8 @@ source ../.env
 set +a
 
 export INSTANCE_ID
-export BASE_DOMAIN="localhost"
-export APP_IMAGE="backend-app:latest"
-export PLAYWRIGHT_IMAGE="playwright-browser:latest"
+export BASE_DOMAIN="172.25.17.1.nip.io"
+export APP_IMAGE="jrwoline/chamber-app"
+export PLAYWRIGHT_IMAGE="jrwoline/playwright-browser"
 
 envsubst < ../chambers/chamber.yaml | kubectl apply -f -

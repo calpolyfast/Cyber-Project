@@ -3,17 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "./web/", 
+    "./web/",
     "./api/"
   ],
   "description": "",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "index.js", 
+  "main": "index.js",
   "scripts": {
     "web:dev": "npm run dev --workspace=web",
-    "api:dev": "npm run dev --workspace=api", 
+    "api:dev": "npm run dev --workspace=api",
     "web:build": "npm run build --workspace=web"
   }
 }
