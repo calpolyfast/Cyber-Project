@@ -2,7 +2,7 @@ name: Docker Image Cli
 
 on:
   push:
-    branches: [ "main", "launcher" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -44,8 +44,8 @@ jobs:
       - name: Build and push launcher image
         uses: docker/build-push-action@v5
         with:
-          context: ./launcher/api
-          file: ./launcher/api/Dockerfile
+          context: ./launcher/
+          file: ./launcher/Dockerfile
           push: true
           tags: jrwoline/launcher:latest
 

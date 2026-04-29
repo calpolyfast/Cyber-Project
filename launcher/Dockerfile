@@ -1,5 +1,5 @@
 FROM node:20-alpine
-WORKDIR /api
+WORKDIR /app
 
 # Install bash, envsubst (via gettext), and curl (to download kubectl)
 RUN apk add --no-cache \
@@ -14,21 +14,24 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && rm kubectl
 
 # Install backend packages
-COPY ./package*.json ./
-RUN npm ci --omit=dev
+COPY ./api/package*.json ./api/
+RUN cd ./api && npm ci --omit=dev
 
-# Copy server files and web package files
-COPY . .
-COPY ../web/package*.json ./web/
+# Copy server files
+COPY ./api/ ./api/
+
+# Install frontend packages
+COPY ./web/package*.json ./web/
+RUN cd ./web && npm ci
 
 # Copy web source and build
-RUN cd ./web & npm ci --omit=dev
-RUN cd ./web & npm run build --outDir ./build --emptyOutDir
+COPY ./web/ ./web/
+RUN cd ./web && npm run build --emptyOutDir
 RUN rm -rf ./web
 
 # Ensure deploy.sh is executable
-RUN chmod +x ./infra_copy/scripts/deploy.sh
+RUN chmod +x ./api/infra_copy/scripts/deploy.sh
 
 # Run the server
 EXPOSE 3000
-CMD ["node", "./src/app.mjs"]
+CMD ["node", "./api/src/app.mjs"]
