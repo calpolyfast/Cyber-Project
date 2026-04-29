@@ -26,8 +26,8 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
-          context: ./app/backend
-          file: ./app/backend/Dockerfile
+          context: ./app/
+          file: ./app/Dockerfile
           push: true
           tags: jrwoline/chamber-app:latest
 
@@ -35,8 +35,8 @@ jobs:
       - name: Build and push playwright image
         uses: docker/build-push-action@v5
         with:
-          context: ./launcher/playwright
-          file: ./launcher/playwright/Dockerfile
+          context: ./playwright
+          file: ./playwright/Dockerfile
           push: true
           tags: jrwoline/playwright-browser:latest
 
