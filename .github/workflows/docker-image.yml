@@ -29,7 +29,7 @@ jobs:
           context: ./app/backend
           file: ./app/backend/Dockerfile
           push: true
-          tags: raglem/backend-app:latest
+          tags: jrwoline/chamber-app:latest
 
       # -------- Playwright image --------
       - name: Build and push playwright image
@@ -38,7 +38,7 @@ jobs:
           context: ./launcher/playwright
           file: ./launcher/playwright/Dockerfile
           push: true
-          tags: raglem/playwright-browser:latest
+          tags: jrwoline/playwright-browser:latest
 
       # -------- Launcher image --------
       - name: Build and push launcher image
@@ -47,5 +47,5 @@ jobs:
           context: ./launcher/api
           file: ./launcher/api/Dockerfile
           push: true
-          tags: raglem/launcher-app:latest
+          tags: jrwoline/launcher:latest
 
