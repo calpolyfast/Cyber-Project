@@ -1,4 +1,5 @@
 import XSSLab from "../components/XSSLab";
+import CSRFLab from "../components/CSRFLab";
 import Nav from "../components/Nav"
 
 export default function Labs() {
@@ -9,6 +10,7 @@ export default function Labs() {
             </header>
             <div className="flex flex-col w-[80%]">
                 <XSSLab />
+                <CSRFLab />
             </div>
             <Nav />
         </div>

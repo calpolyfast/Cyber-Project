@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { sendLinkPayload } from "../api/payloads.mjs"
 
 export default function XSSLab() {
     const [ resMessage, setResMessage ] = useState("")

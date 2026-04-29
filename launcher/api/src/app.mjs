@@ -9,6 +9,20 @@ import cron from 'node-cron'
 import { randomUUID } from 'crypto';
 import cookieParser from 'cookie-parser'
 import { addChamberIdToCookie, extractChamberId } from './cookies.js'
+import { PassThrough } from 'stream';
+import * as k8s from '@kubernetes/client-node'
+
+const kc = new k8s.KubeConfig();
+kc.loadFromDefault();
+const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+const exec = new k8s.Exec(kc);
+
+const currentContext = kc.getCurrentContext();
+if (!currentContext) {
+    console.error("Error: No Kubernetes configuration found.");
+} else {
+    console.log("Connected to context:", currentContext);
+}
 
 dotenv.config()
 
@@ -82,7 +96,7 @@ app.use('/api', extractChamberId)
 app.get('/api/redirect', (req, res) => {
     const chamberId = req.chamberId
     const base = process.env.BASE_DOMAIN || "localhost:3000";
-    const protocol = base.includes("localhost") ? "http" : "https";
+    const protocol = "http";
     const url = `${protocol}://${chamberId}.${base}`;
     res.redirect(301, url); 
 });
@@ -181,31 +195,98 @@ app.delete('/api/delete-chamber/', async (req, res) => {
     }
 })
 
-app.post('/api/send-link-payload', (req, res) => {
-    // For demo purposes. We might want to opt for haivng 'instanceID' be in a JWT that is created when the user deploys a chamber
+app.post('/api/send-link-payload', async (req, res) => {
     const { instance_id, payload } = req.body
 
-    // NOTE: The file path for the script might be wrong
-    const proc = spawn("bash", ["../../playwright/runplaywright.sh", instance_id, "gotolink.js", payload])
+    if (!instance_id || !payload) {
+        return res.sendStatus(400);
+    }
 
-    proc.stdout.on("data", (data) => {
-        if (res.headersSent)
-            return
-        proc.kill()
-        return res.status(200).json({ data: data.toString() })
-    })
+    try {
+        const podList = await k8sApi.listNamespacedPod({ namespace: "default" });
+        const pod = podList.items.find(p => p.metadata.name.startsWith(`chamber-${instance_id}`));
 
-    proc.stderr.on("data", () => {
-        if (res.headersSent)
-            return
-        return res.status(200).json({ data: "No Effect" })
-    })
+        if (!pod) {
+            return res.status(404).send("Pod not found");
+        }
 
-    proc.on("close", () => {
-        if (res.headersSent)
-            return
-        return res.status(200).json({ data: "No Effect" })
-    })
+        const podName = pod.metadata.name;
+        const result = await new Promise((resolve, reject) => {
+            const stdoutStream = new PassThrough();
+            const chunks = [];
+            
+            stdoutStream.on('data', (chunk) => chunks.push(chunk));
+            stdoutStream.on('end', () => resolve(Buffer.concat(chunks).toString()));
+            stdoutStream.on('error', reject);
+
+            exec.exec(
+                'default',
+                podName,
+                'browser',
+                ['node', 'gotolink.js', payload],
+                stdoutStream,
+                stdoutStream,
+                null,
+                false
+            ).catch(reject);
+        });
+
+        return res.status(200).json({ data: result });
+        
+    } catch (err) {
+        console.error("K8s Exec Failure:", err);
+        
+        if (!res.headersSent) {
+            return res.status(500).json({ error: "Failed to execute payload" });
+        }
+    }
+})
+
+app.post('/api/send-html-payload', async (req, res) => {
+    const { instance_id, payload } = req.body
+
+    if (!instance_id || !payload) {
+        return res.sendStatus(400);
+    }
+
+    try {
+        const podList = await k8sApi.listNamespacedPod({ namespace: "default" });
+        const pod = podList.items.find(p => p.metadata.name.startsWith(`chamber-${instance_id}`));
+
+        if (!pod) {
+            return res.status(404).send("Pod not found");
+        }
+
+        const podName = pod.metadata.name;
+        const result = await new Promise((resolve, reject) => {
+            const stdoutStream = new PassThrough();
+            const chunks = [];
+            
+            stdoutStream.on('data', (chunk) => chunks.push(chunk));
+            stdoutStream.on('end', () => resolve(Buffer.concat(chunks).toString()));
+            stdoutStream.on('error', reject);
+
+            exec.exec(
+                'default',
+                podName,
+                'browser',
+                ['node', 'htmlpayload.js', payload],
+                stdoutStream,
+                stdoutStream,
+                null,
+                false
+            ).catch(reject);
+        });
+
+        return res.status(200).json({ data: result });
+        
+    } catch (err) {
+        console.error("K8s Exec Failure:", err);
+        
+        if (!res.headersSent) {
+            return res.status(500).json({ error: "Failed to execute payload" });
+        }
+    }
 })
 
 // Every hour, delete all chamber deployments that are older than 1 hour
@@ -287,6 +368,8 @@ cron.schedule('0 * * * *', async () => {
                 }), 
             ]
         }))
+
+        console.log("Old chambers removed")
     }
     catch(err){
         console.error(err)

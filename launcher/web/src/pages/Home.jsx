@@ -21,7 +21,7 @@ const Home = () => {
             sessionStorage.setItem("FAST-chamberId", JSON.stringify(id))
 
             const base = import.meta.env.VITE_CHAMBER_URL || "localhost:3000";
-            const protocol = base.includes("localhost") ? "http" : "https";
+            const protocol = "http";
             const url = `${protocol}://${id}.${base}`;
 
             window.open(url, "_blank", "noopener,noreferrer");
