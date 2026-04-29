@@ -1,40 +1,51 @@
 import prisma from "../src/config/db.js";
+import reviewPool from "../resources/reviewPool.js";
 
 // This script is used to populate the db with some users and products
 // It is intended to be run on server startup, but can also be run manually with `node populateDB.js`
-export const populateUsersAndProducts = async () => {
+export const populateUsers = async () => {
     // Create list of users to be added to the db
     const users = [
         {
             username: "admin",
             password: "admin123",
             email: "admin@example.com",
-            role: "User",
+            role: "Admin",
         },
         {
             username: "john_doe",
             password: "password123",
-            email: "",
+            email: null,
+            role: "User",
+        }, 
+        {
+            username: "jane_smith",
+            password: "password456",
+            email: null,
             role: "User",
         }
     ]
 
     // Add users to the db if not already present
-    users.forEach(async (user) => {
-        const existingUser = await prisma.user.findUnique({
-            where: {
-                username: user.username
+    await Promise.all(
+        users.map(async (user) => {
+            const existingUser = await prisma.user.findUnique({
+                where: {
+                    username: user.username
+                }
+            })
+            
+            if (!existingUser) {
+                await prisma.user.create({
+                    data: user
+                })
+                console.log(`Created user ${user.username}`)
             }
         })
-        
-        if (!existingUser) {
-            await prisma.user.create({
-                data: user
-            })
-            console.log(`Created user ${user.username}`)
-        }
-    })
+)
+}
 
+export const populateProducts = async () => {
     // Create list of products to be added to the db
     const products = [
         {
@@ -90,21 +101,59 @@ export const populateUsersAndProducts = async () => {
     ]
 
     // Add products to the db if not already present
-    let numOfProductsCreated = 0
-    products.forEach(async (product) => {
-        const existingProduct = await prisma.product.findUnique({
-            where: {
-                name: product.name
+    await Promise.all(
+        products.map(async (product) => {
+            const existingProduct = await prisma.product.findUnique({
+                where: {
+                    name: product.name
+                }
+            })
+
+            if (!existingProduct) {
+                const createdProduct = await prisma.product.create({
+                    data: product
+                })
+
+                // Generate reviews for the product
+                await generateReviews(createdProduct.id)
             }
         })
+    )
+    
+}
 
-        if (!existingProduct) {
-            await prisma.product.create({
-                data: product
+// This function is intended to be used within populateProducts() to generate reviews for the products being added to the db
+const generateReviews = async (productId) => {
+
+    const commentPool = reviewPool
+
+    const reviewsN = Math.floor(Math.random() * 10) + 5; // Generate between 5 - 10 reviews per product
+    for (let i = 0; i < reviewsN; i++ ) {
+        const randomUser = (
+            await prisma.user.findMany({
+                take: 1,
+                skip: Math.floor((await prisma.user.count()) * Math.random()),
             })
-            numOfProductsCreated += 1
+        )[0]
+
+        // Randomly assign a star rating and comment based on the generated rating
+        const starsN = Math.floor(Math.random() * 5) + 1 + ( Math.random() > 0.5 ? 0.5 : 0 )
+        let comment = ""
+        if (starsN <= 2) {
+            comment = commentPool.bad[Math.floor(Math.random() * commentPool.bad.length)]
+        } else if (starsN <= 4) {
+            comment = commentPool.mid[Math.floor(Math.random() * commentPool.mid.length)]
+        } else {
+            comment = commentPool.good[Math.floor(Math.random() * commentPool.good.length)]
         }
-    })
+
+        await prisma.review.create({ data: {
+            productId: productId,
+            userId: randomUser.id,
+            comment: comment,
+            stars: starsN
+        } })
+    }
 }
 
 // This function is used to populate the orders table with some orders for a given user

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import prisma from "../config/db.js"
 
-const verifyOwner = async (req, res, next) => {
+const verifyAdmin = async (req, res, next) => {
     // Verify the token
     try {
          // Retrieve the token from the cookie
@@ -29,4 +29,4 @@ const verifyOwner = async (req, res, next) => {
         return res.status(401).json({ error: 'Invalid authentication token' });
     }
 }
-export default verifyOwner
+export default verifyAdmin

@@ -32,11 +32,21 @@ const About = () => {
     ]
 
     return <ContentWrapper>
-            <h1 className="text-4xl font-bold text-center text-black p-2">About Us</h1>
-            <div className="bg-white font-sans border-2 border-secondary rounded-sm text-black p-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Animi iste, hic aperiam eum voluptatibus eius neque a ipsa, ipsum vitae provident, beatae pariatur sunt quia.</div>
-            <div className="flex flex-col md:grid gap-2 grid-cols-2">{members.map((member, index) => {
-                return <MemberCard key={member.order} name={member.name} linkedin={member.linkedin} description={member.description}/>
-            })}</div>
+        <div className="flex flex-col items-center align-middle gap-4 p-4">
+            <div className="flex flex-col w-full p-4 gap-2 bg-primary">
+                <h1 className="text-4xl font-bold text-center text-black p-2">About Us</h1>
+                <div className="bg-white font-sans border-2 border-secondary rounded-sm p-1 text-black text-center *:p-2">The “official” website for CPP Farm Store, allowing people to shop online for drive up orders with ease. This website is built using only the highest quality of AI slop, so security is sure to not be an issue!</div>
+            </div>
+            
+            <a href="/" className="bg-primary-light text-2xl p-3 text-white w-max transition hover:scale-110 duration-200 ease-in-out cursor-pointer">Start Shopping!</a>
+
+            <div className="flex flex-col p-4 w-full gap-2 bg-primary">
+                <h1 className="w-full text-center text-4xl">Credits</h1>
+                <div className="flex flex-col md:grid gap-2 grid-cols-2">{members.map((member, index) => {
+                    return <MemberCard key={member.order} name={member.name} linkedin={member.linkedin} description={member.description}/>
+                })}</div>
+            </div>
+        </div>
         </ContentWrapper>
 }
 

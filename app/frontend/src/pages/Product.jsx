@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom" 
 import { useState, useEffect, useContext } from "react"
 import { getProductById } from "../api/products.mjs"
+import LoadingSpinner from "../components/LoadingSpinner"
 import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
 import timeAgo from "../util/timeAgo";
 import { AuthContext } from "../components/AuthContext";
@@ -88,11 +89,19 @@ const StarRatingInput = ({ value = 0, onChange }) => {
 
 const Reviews = ({ reviews }) => {
 
+    if (!reviews || reviews.length == 0) {
+        return (
+            <div className="flex flex-col items-center gap-2 py-4">
+                <h3 className="text-lg font-semibold text-gray-500"> No reviews yet. Be the first to review this product! </h3>
+            </div>
+        )
+    }
+
     return (
-        <ul className="flex flex-col">
+        <ul className="flex flex-col max-h-full overflow-y-auto">
             {
                 reviews.map(review => (
-                    <li className="flex flex-col gap-y-2 border-b border-b-gray-400 py-4">
+                    <li className="flex flex-col gap-y-2 border-b border-b-gray-400 py-4" key={review.id}>
                         <header className="flex flex-row items-center gap-x-2">
                             <span className="font-bold text-md"> {review.user.username } </span>
                             <RatingStars stars={review.stars} />
@@ -200,18 +209,22 @@ export default function Product() {
     const { isAuthenticated } = useContext(AuthContext)
     const { productId } = useParams()
     const [product, setProduct] = useState(null)
+    const [loadingProduct, setLoadingProduct] = useState(false)
 
     useEffect(() => {
 
         const fetchProduct = async () => {
+            setLoadingProduct(true)
             try {
                 const res = await getProductById(productId)
                 setProduct(res.data)
-                console.log(res)
-
             }
             catch (err) {
                 console.error(err)
+                alert("Oops! Something went wrong while fetching the product.")
+            }
+            finally {
+                setLoadingProduct(false)
             }
         }
 
@@ -227,10 +240,11 @@ export default function Product() {
     }
 
     return (
-        <div className="page-wrapper">
-            <div className="flex flex-col items-stretch w-full max-w-5xl p-4 bg-white shadow-xl rounded-lg ">
-                <div className="flex flex-col justify-between gap-4">
-                    { product && <div>
+        <div className="page-wrapper flex flex-col items-center gap-4">
+            <div className="flex flex-col items-stretch h-full w-full max-w-5xl p-4 bg-white shadow-xl rounded-lg">
+                <div className="flex flex-col h-full justify-between gap-4">
+                    {/* Product loaded properly */}
+                    { !loadingProduct && product && <div>
                         <div className="flex flex-col gap-1 m-1">
                             <h2 className="text-2xl font-bold">{product.name}</h2>
                             <p>{product.description}</p>
@@ -244,16 +258,24 @@ export default function Product() {
                                 : <img src="https://placehold.co/100" className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
                             }
                         </div>
-                    </div> }
+                    </div> } 
+                    { !product && 
+                        <div className="flex flex-col h-full justify-center items-center gap-4 m-1">
+                            <h1> { loadingProduct ? "Loading Product..." : "Failed to load product" } </h1>
+                            { loadingProduct && <LoadingSpinner /> }
+                        </div> 
+                    }
                 </div>
-                {
-                    product && <div className="flex flex-col gap-y-4">
+            </div>
+            { !loadingProduct && product &&
+                <div className="flex flex-col items-stretch w-full max-w-5xl p-4 bg-white shadow-xl rounded-lg">
+                    <div className="flex flex-col gap-y-4">
                         <h2 className="font-bold text-2xl"> Reviews </h2>
                         { isAuthenticated && <AddReview productId={productId} addReviewToList={addReviewToList} /> }
                         <Reviews reviews={product.reviews} />
                     </div>
-                }
-            </div>
+                </div>
+            }
         </div>
         
     )

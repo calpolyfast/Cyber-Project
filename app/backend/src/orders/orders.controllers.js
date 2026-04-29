@@ -54,7 +54,7 @@ export const createOrderController = async (req, res) => {
                 // Add the product * quantity to the actualTotalPrice
                 actualTotalPrice += product.price * orderItem.quantity
                 // Create the order item
-                await prisma.orderItem.create({
+                await tx.orderItem.create({
                     data: {
                         quantity: orderItem.quantity,
                         productId: orderItem.productId,
@@ -114,7 +114,6 @@ export const createOrderController = async (req, res) => {
                 error: "Any item must correspond to a valid product"
             })
         }
-
         return res.status(500).json({ error: "Server Error" })
     }
 }

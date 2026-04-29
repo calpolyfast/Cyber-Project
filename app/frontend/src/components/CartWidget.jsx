@@ -1,9 +1,11 @@
 import { useContext, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "./CartContext";
 import { IoCartOutline } from "react-icons/io5";
 
 export default function CartWidget() {
     const { cart, showCart, setShowCart } = useContext(CartContext);
+    const navigate = useNavigate()
 
     const totalPrice = cart.reduce(
         (sum, c) => sum + c.item.price * c.quantity,
@@ -75,12 +77,21 @@ export default function CartWidget() {
                         </div>
                     ))}
 
-                    {/* Total */}
-                    {cart.length > 0 && (
-                        <div className="text-right font-bold pt-3 text-sm">
-                            Total: ${totalPrice.toFixed(2)}
-                        </div>
-                    )}
+                    <div className="flex justify-between items-center gap-2 py-2">
+                        <button 
+                            className="bg-primary text-white rounded-md px-2 py-1 text-sm 
+                            transition-transform hover:scale-105 hover:cursor-pointer"
+                            onClick={() => navigate("/shopping-cart")}
+                        >
+                            Checkout
+                        </button>
+                        {/* Total */}
+                        {cart.length > 0 && (
+                            <div className="text-right font-bold text-sm">
+                                Total: ${totalPrice.toFixed(2)}
+                            </div>
+                        )}
+                    </div>
 
                 </div>
             )}

@@ -14,7 +14,7 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
                 {
                     throw "getProducts failed to fetch from /api/products. Is the API url correct?"
                 }
-                setProducts(res.data)
+                setProducts(data)
             })
             .catch((reason) => {
                 console.error(reason)
