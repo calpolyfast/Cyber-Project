@@ -240,7 +240,7 @@ export default function Product() {
                         </div>
                         <div className="flex overflow-hidden w-full h-60 justify-center">
                             { product.image
-                                ? <img src={p.image} className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
+                                ? <img src={product.image} className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
                                 : <img src="https://placehold.co/100" className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
                             }
                         </div>

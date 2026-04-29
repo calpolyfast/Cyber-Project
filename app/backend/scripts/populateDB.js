@@ -7,7 +7,7 @@ export const populateUsersAndProducts = async () => {
     const users = [
         {
             username: "admin",
-            password: "admin123",
+            password: "thebigcheese#123",
             email: "admin@example.com",
             role: "Admin",
         },

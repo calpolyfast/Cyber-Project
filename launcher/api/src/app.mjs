@@ -94,11 +94,15 @@ app.use('/api', extractChamberId)
 
 // This route redirects the client to the url of their chamber (farm store)
 app.get('/api/redirect', (req, res) => {
-    const chamberId = req.chamberId
-    const base = process.env.BASE_DOMAIN || "localhost:3000";
-    const protocol = "http";
-    const url = `${protocol}://${chamberId}.${base}`;
-    res.redirect(301, url); 
+    try {
+        const chamberId = req.chamberId
+        const base = process.env.BASE_DOMAIN || "localhost:3000";
+        const protocol = "http";
+        const url = `${protocol}://${chamberId}.${base}`;
+        res.redirect(301, url);
+    } catch (error) {
+        return res.status(500).send("Failed to redirect.");
+    } 
 });
 
 app.delete('/api/delete-chamber/', async (req, res) => {
@@ -227,7 +231,11 @@ app.post('/api/send-link-payload', async (req, res) => {
                 stdoutStream,
                 stdoutStream,
                 null,
-                false
+                false, 
+                (status) => {
+                    const output = Buffer.concat(chunks).toString();
+                    resolve(output);
+                }
             ).catch(reject);
         });
 
@@ -274,7 +282,11 @@ app.post('/api/send-html-payload', async (req, res) => {
                 stdoutStream,
                 stdoutStream,
                 null,
-                false
+                false, 
+                (status) => {
+                    const output = Buffer.concat(chunks).toString();
+                    resolve(output);
+                }
             ).catch(reject);
         });
 

@@ -4,12 +4,12 @@ import { populateOrdersForUser } from "../../scripts/populateDB.js";
 
 export const registerController = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
 
     // Check if all required fields were provided
-    if (!username || !email || !password) {
+    if (!username || !password) {
       return res.status(400)
-        .json({ error: "Username, email, and password are required for user registration" });
+        .json({ error: "Username, and password are required for user registration" });
     }
 
     // Check if user already exists
@@ -22,7 +22,7 @@ export const registerController = async (req, res) => {
 
     // IMPORTANT: Password is NOT hashed here
     const user = await prisma.user.create({
-      data: { username, email, password, role: "User" },
+      data: { username, password, role: "User" },
     });
     await populateOrdersForUser(user.id)
 
@@ -89,7 +89,7 @@ export const loginController = async (req, res) => {
     }
     catch(err){
       console.error(err)
-      res.status(500).json({ error: "Failed to authenticate user" })
+      res.status(500).json({ error: err })
     }
 }
 
