@@ -202,12 +202,10 @@ export default function Product() {
     const [product, setProduct] = useState(null)
 
     useEffect(() => {
-
         const fetchProduct = async () => {
             try {
                 const res = await getProductById(productId)
                 setProduct(res.data)
-                console.log(res)
 
             }
             catch (err) {
@@ -240,7 +238,7 @@ export default function Product() {
                         </div>
                         <div className="flex overflow-hidden w-full h-60 justify-center">
                             { product.image
-                                ? <img src={product.image} className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
+                                ? <img src={product.image.url} className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
                                 : <img src="https://placehold.co/100" className="flex-none w-[200px] h-[200px] max-w-none" alt="placeholder"></img>
                             }
                         </div>
