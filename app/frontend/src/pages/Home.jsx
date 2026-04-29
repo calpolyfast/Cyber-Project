@@ -107,9 +107,9 @@ const ProductListing = ({ item }) => {
         </div>
         <div className="flex flex-col items-center justify-center w-full h-full">
             <div className="flex flex-row items-center justify-between gap-2 p-2 w-full">
-                <button className="text-4xl cursor-pointer" onClick={decreaseQuantity}>{"<"}</button>
+                <button className="text-4xl cursor-pointer btn-interactive" onClick={decreaseQuantity}>{"<"}</button>
                 <input className="text-xl w-full text-center" ref={inputRef} value={quantity} onKeyDown={handleKeyDown} onBlur={() => {handleSubmit()}} onChange={(e) => {setQuantity(e.target.value)}} />
-                <button className="text-4xl cursor-pointer" onClick={increaseQuantity}>{">"}</button>
+                <button className="text-4xl cursor-pointer btn-interactive" onClick={increaseQuantity}>{">"}</button>
             </div>
             <div className="w-[50%] h-[50%] max-w-10 max-h-10 cursor-pointer">
                 <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,9 @@ const Home = () => {
                         products.map((product, index) => {
                             return <ProductListing key={index} item={product}/>
                         }) :
-                        Array(8).fill(<PlaceholderListing />)
+                        Array.from({ length: 8 }).map((_, index) => (
+                            <PlaceholderListing key={index} />
+                        ))
                 }
             </div>
         </ContentWrapper>

@@ -9,7 +9,7 @@ export const registerController = async (req, res) => {
     // Check if all required fields were provided
     if (!username || !password) {
       return res.status(400)
-        .json({ error: "Username, and password are required for user registration" });
+        .json({ error: "Username and password are required for user registration" });
     }
 
     // Check if user already exists
@@ -22,7 +22,7 @@ export const registerController = async (req, res) => {
 
     // IMPORTANT: Password is NOT hashed here
     const user = await prisma.user.create({
-      data: { username, password, role: "User" },
+      data: { username, email: email || null, password, role: "User" },
     });
     await populateOrdersForUser(user.id)
 

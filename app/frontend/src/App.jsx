@@ -13,6 +13,7 @@ import { CartProvider } from "./components/CartContext"
 import Orders from "./pages/Orders"
 import MobileNav from "./components/MobileNav"
 import Product from "./pages/Product"
+import Invoice from "./pages/Invoice"
 
 function App() {
   return (
@@ -20,13 +21,16 @@ function App() {
         <AuthProvider>
             <CartProvider>
                 <main className="full-screen">
-                    <NavBar></NavBar>
+                    <NavBar />
                     <Routes>
                         <Route index element={
                             <Home />
                         } />
                         <Route path={"/product/:productId"} element={
                             <Product />
+                        } />
+                        <Route path={"/invoice"} element={
+                            <ProtectedRoute><Invoice /></ProtectedRoute>
                         } />
                         <Route path={"/about"} element={
                             <About />
