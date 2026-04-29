@@ -13,9 +13,9 @@ const About = () => {
     const members = [
         {
             order: 0,
-            name: "Member",
-            linkedin: "linkedin.com/in/member", 
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat, doloribus!"
+            name: "Jack Woline",
+            linkedin: "linkedin.com/in/jonathan-woline", 
+            description: "Director for the research project and leader of the development of this wonderfully secure website!"
         },
         {
             order: 1,
