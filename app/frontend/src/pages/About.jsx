@@ -3,7 +3,9 @@ import ContentWrapper from "../components/ContentWrapper"
 const MemberCard = ({ name, linkedin, description }) => {
     return <div className="flex flex-col rounded-sm border-2 border-secondary gap-4 bg-white font-sans p-2">
         <h2 className="text-2xl text-center font-bold">{name}</h2>
-        <p>{linkedin}</p>
+        <a href={`https://${linkedin}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+            {linkedin}
+        </a>
         <p>{description}</p>
     </div>
 }
@@ -19,9 +21,9 @@ const About = () => {
         },
         {
             order: 1,
-            name: "Member2",
-            linkedin: "linkedin.com/in/member2", 
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat, doloribus!"
+            name: "Theoden Melgar",
+            linkedin: "linkedin.com/in/theoden-melgar", 
+            description: "Hi! I was the backend lead for this project. Have fun learning about some common web vulnerabilities and do your best to break our site :) "
         },
         {
             order: 2,
