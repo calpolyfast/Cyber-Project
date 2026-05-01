@@ -123,6 +123,11 @@ const AddReview = ({ productId, addReviewToList }) => {
         try {
             const res = await postReview(productId, cleaned, numberOfStars)
             console.log(res.data)
+
+            if (res.data.flag) {
+                alert("Congratulations! You found a flag: " + res.data.flag)
+            }
+            
             addReviewToList(res.data)
             setWritingReview(false)
             setComment("")
