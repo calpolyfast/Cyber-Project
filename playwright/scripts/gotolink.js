@@ -15,7 +15,6 @@ async function run() {
         console.log("Alert detected:", dialog.message());
         alertDetected = true;
         await dialog.dismiss();
-        await browser.close();
     });
 
     await page.goto(process.argv[2]);
@@ -27,6 +26,11 @@ async function run() {
     }
 
     await browser.close();
+    process.exit(0)
 }
 
-run().catch(console.error);
+run().catch((err) => {
+        console.error("Nothing happened.")
+        process.exit(1)
+    }
+);

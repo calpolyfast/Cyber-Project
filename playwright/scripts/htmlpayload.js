@@ -12,23 +12,30 @@ async function run() {
 
     let requestMade = false;
 
+    console.log()
+
     page.on("request", async (request) => {
         const url = request.url();
 
         if (url.includes(process.argv[3])) {
             console.log('Request made to target site:', url);
+            requestMade = true;
         }
     });
 
-    await page.setContent(process.argv[2]);
+    await page.setContent(process.argv[2], {waitUntil: 'networkidle'});
 
     await page.waitForTimeout(3000);
 
     if (!requestMade) {
-        console.log("No request made.");
+        console.log(`No request made to ${process.argv[3]}.`);
     }
 
     await browser.close();
+    process.exit(0)
 }
 
-run().catch(console.error);
+run().catch(() => {
+    console.error("An error occurred when running the Playwright script")
+    process.exit(1)
+});
