@@ -17,7 +17,7 @@ import OrderRouter from './orders/orders.routes.js'
 import InvoiceRouter from './invoices/invoices.routes.js'
 import ReviewRouter from './reviews/review.routes.js'
 
-import { populateUsers, populateProducts } from '../scripts/populateDB.js'
+import { populateUsers, populateProducts, generateReviews } from '../scripts/populateDB.js'
 
 dotenv.config();
 
@@ -54,8 +54,12 @@ const initialize = async () => {
   });
 
   // Populate the database with some initial data
+  const ids = await populateProducts()
   await populateUsers()
-  await populateProducts()
+
+  ids.forEach(id => {
+    generateReviews(id)
+  })
 
   app.listen(port, async () => {
       console.log(`Server listening on http://localhost:${port}`);

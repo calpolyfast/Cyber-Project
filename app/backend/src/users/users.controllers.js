@@ -4,7 +4,7 @@ import { populateOrdersForUser } from "../../scripts/populateDB.js";
 
 export const registerController = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
 
     // Check if all required fields were provided
     if (!username || !password) {
@@ -24,11 +24,11 @@ export const registerController = async (req, res) => {
     const user = await prisma.user.create({
       data: { username, email: email || null, password, role: "User" },
     });
-    await populateOrdersForUser(user.id)
 
     res.status(201).json(user);
   } catch (err) {
     res.status(500).json({error: "Failed to register user" });
+    console.log(err)
   }
 }
 

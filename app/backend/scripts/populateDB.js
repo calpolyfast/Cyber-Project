@@ -36,10 +36,16 @@ export const populateUsers = async () => {
             })
             
             if (!existingUser) {
-                await prisma.user.create({
+                const newUser = await prisma.user.create({
                     data: user
                 })
                 console.log(`Created user ${user.username}`)
+                
+                try {
+                    populateOrdersForUser(newUser.id)
+                } catch (error) {
+                    console.error("Could not populate orders for user: ", error)
+                }
             }
         })
 )
@@ -161,6 +167,7 @@ export const populateProducts = async () => {
     ]
 
     // Add products to the db if not already present
+    const createdIds = []
     await Promise.all(
         products.map(async (product) => {
             const existingProduct = await prisma.product.findUnique({
@@ -174,16 +181,15 @@ export const populateProducts = async () => {
                     data: product
                 })
 
-                // Generate reviews for the product
-                await generateReviews(createdProduct.id)
+                createdIds.push(createdProduct.id);
             }
         })
     )
-    
+    return createdIds
 }
 
 // This function is intended to be used within populateProducts() to generate reviews for the products being added to the db
-const generateReviews = async (productId) => {
+export const generateReviews = async (productId) => {
 
     const commentPool = reviewPool
 
@@ -268,16 +274,21 @@ export const populateOrdersForUser = async (userId) => {
         }
     ]
     const invoice1 = {
-        orderId: order1.id,
-        username: user.username,
-        email: user.email,
+        data: {
+            order: {
+                connect: { id: order1.id }
+            },
+            username: user.username,
+            email: user.email || "default@fastfarmstore.com"
+        }
     }
-    orderItems1.totalPrice = orderItems1.reduce(acc, () => {
+    
+    orderItems1.totalPrice = orderItems1.reduce((acc, item) => {
         const product = products.find(p => p.id === item.productId)
         return acc + product.price * item.quantity
-    })
+    }, 0)
 
-    await prisma.invoice.create({ data: invoice1 })
+    const newInvoice1 = await prisma.invoice.create(invoice1)
     await prisma.orderItem.createMany({
         data: orderItems1
     })
@@ -307,17 +318,22 @@ export const populateOrdersForUser = async (userId) => {
         }
     ]
     const invoice2 = {
-        orderId: order2.id,
-        username: user.username,
-        email: user.email,
+        data: {
+            order: {
+                connect: { id: order2.id }
+            },
+            username: user.username,
+            email: user.email || userId > 1 ? "flag" : "default@fastfarmstore.com"
+        }
     }
-    orderItems2.totalPrice = orderItems2.reduce(acc, () => {
+    
+    orderItems2.totalPrice = orderItems2.reduce((acc, item) => {
         const product = products.find(p => p.id === item.productId)
         return acc + product.price * item.quantity
-    })
+    }, 0)
 
 
-    await prisma.invoice.create({ data: invoice2 })
+    const newInvoice2 = await prisma.invoice.create(invoice2)
     await prisma.orderItem.createMany({
         data: orderItems2
     })

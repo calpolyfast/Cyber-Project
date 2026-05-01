@@ -76,7 +76,7 @@ const OrderEntry = ({ cartObject }) => {
 
     return <li className="flex flex-row gap-1">
             <div className="flex flex-2 justify-center items-center">
-                <img src={cartObject.item.image} className="h-fit"></img>
+                <img src={cartObject.item.image.url} className="h-fit"></img>
             </div>
             <div className="flex-2 text-xl text-center align-bottom">
                 <h1 className="text-2xl text-dark">{cartObject.item.name}</h1>

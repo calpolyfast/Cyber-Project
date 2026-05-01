@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getProducts, searchProduct } from "../api/products.mjs";
 import { IoMdClose, IoMdSearch } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = ({ query, setQuery, setProducts }) => {
 
     const decodedQuery = decodeURIComponent(query);
+    const navigate = useNavigate();
     const [input, setInput] = useState(decodedQuery !== "null" ? decodedQuery : "")
 
     useEffect(() => {
@@ -89,7 +91,9 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
             <div className="flex-3/4" dangerouslySetInnerHTML={{__html: decodedQuery != "null" ? decodedQuery : ""}}></div> {/* This is where the server's response gets rendered */}
             <IoMdClose 
                 className="text-primary text-2xl cursor-pointer transition-transform hover:scale-120"
-                onClick={clearSearch}
+                onClick={() => {
+                    clearSearch()
+                }}
             />
         </button> }
     </div>

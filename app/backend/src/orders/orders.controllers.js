@@ -71,9 +71,11 @@ export const createOrderController = async (req, res) => {
             // Create invoice
             await tx.invoice.create({
                 data: {
-                    orderId: order.id,
+                    order: {
+                        connect: { id: order.id }
+                    },
                     username: user.username,
-                    email: user.email
+                    email: user.email || "default@fastfarmstore.com"
                 }
             })
 
@@ -114,6 +116,8 @@ export const createOrderController = async (req, res) => {
                 error: "Any item must correspond to a valid product"
             })
         }
+
+        console.error(err)
         return res.status(500).json({ error: "Server Error" })
     }
 }

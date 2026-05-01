@@ -11,7 +11,7 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = await register(username, password);
+        const token = await register(username, null, password);
         if (token)
         {
             navigate("/")
