@@ -4,18 +4,17 @@ import { createContext, useEffect, useState } from "react";
 export const AppContext = createContext(null);
 
 export const AppProvider = ({ children }) => {
-    const [chamberId, setChamberId] = useState(() => {
-        const stored = sessionStorage.getItem("FAST-chamberId");
-        return stored ? JSON.parse(stored) : null;
-    })
-    const [foundFlags, setFoundFlags] = useState(() => {
-        const stored = sessionStorage.getItem("FAST-foundFlags");
-        return stored ? JSON.parse(stored) : [];
-    })
+    const [chamberId, setChamberId] = useState(null)
+    const [foundFlags, setFoundFlags] = useState([])
 
     useEffect(() => {
         sessionStorage.setItem("FAST-foundFlags", JSON.stringify(foundFlags));
     }, [foundFlags]);
+
+    useEffect(() => {
+        let stored = sessionStorage.getItem("FAST-chamberId");
+        setChamberId(stored ? JSON.parse(stored) : null);
+    })
 
     const updateFlag = (id) => {
         setFoundFlags(prevFlags => {
