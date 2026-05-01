@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
             return newUser
 
         } catch (error) {
+            alert("Login failed. Please check your credentials and try again.")
             console.error("Login failed: ", error);
         }
     }
