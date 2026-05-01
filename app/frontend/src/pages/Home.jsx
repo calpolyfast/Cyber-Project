@@ -160,8 +160,8 @@ const Home = () => {
             <div className="flex flex-col md:grid gap-4 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {
                     productsLoaded ?
-                        products.map((product, index) => {
-                            return <ProductListing key={index} item={product}/>
+                        products.map(product => {
+                            return <ProductListing key={product.id} item={product}/>
                         }) :
                         Array(8).fill(<PlaceholderListing />)
                 }

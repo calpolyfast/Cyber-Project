@@ -5,47 +5,20 @@ import { IoMdClose, IoMdSearch } from "react-icons/io";
 const SearchBar = ({ query, setQuery, setProducts }) => {
 
     const decodedQuery = decodeURIComponent(query);
-    const [input, setInput] = useState(decodedQuery !== "null" ? decodedQuery : "")
+    const [input, setInput] = useState(decodedQuery === "null" ? "" : decodedQuery);
 
-    useEffect(() => {
+    const handleGetProducts = async () => {
         getProducts()
-            .then(({ data }) => {
-                if (!Array.isArray(data))
-                {
-                    throw "getProducts failed to fetch from /api/products. Is the API url correct?"
-                }
-                setProducts(res.data)
+            .then(({data}) => {
+                setProducts(data)
             })
             .catch((reason) => {
+                alert("Oops! Something went wrong while fetching the products. Please try again later.")
                 console.error(reason)
             })
-    }, [])
-
-    const clearSearch = () => {
-        setInput("")
-    }
-    
-    const handleChange = (e) => {
-        const next = e.target.value;
-        setInput(next);
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        // Clear the query if the input is empty
-        if (input.trim().length == 0) {
-            clearSearch()
-            return
-        }
-
-        // Update the query
-        setQuery((prev) => {
-            const next = new URLSearchParams(prev);
-            next.set("search", encodeURIComponent(input));
-            return next;
-        });
-
+    const handleSearch = async (searchQuery) => {
         searchProduct(input).then(res => {
             // If there is a flag, notify the user
             // Otherwise, populate the products with the result data
@@ -61,6 +34,54 @@ const SearchBar = ({ query, setQuery, setProducts }) => {
             // TODO: Show err
             console.error(err)
         })
+    }
+
+    useEffect(() => {
+        if (decodedQuery == "null") {
+            handleGetProducts()
+        } else {
+            console.log(decodedQuery)
+            handleSearch(decodedQuery)
+        }
+
+    }, [])
+
+    const clearSearch = () => {
+        setInput("")
+        handleGetProducts()
+
+        // Clear the query
+        setQuery((prev) => {
+            const next = new URLSearchParams(prev);
+            next.delete("search");
+            return next;
+        });
+    }
+    
+    const handleChange = (e) => {
+        const next = e.target.value;
+        setInput(next);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Clear the query if the input is empty
+        if (input.trim().length == 0) {
+            handleGetProducts()
+            clearSearch()
+        }
+        // Otherwise, update the query and search for the product
+        else {
+            // Update the query
+            setQuery((prev) => {
+                const next = new URLSearchParams(prev);
+                next.set("search", encodeURIComponent(input));
+                return next;
+            });
+
+            handleSearch(input)
+        }
     }
 
     return <div className="flex flex-col-reverse gap-y-2 md:flex-row-reverse justify-between items-center w-full">
