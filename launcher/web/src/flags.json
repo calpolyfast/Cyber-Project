@@ -5,10 +5,18 @@
     }, 
     {
         "id": 2,
-        "name": "flag{sql_injection_login_bypass}"
+        "name": "flag{xss_in_product_review}"
     },
     {
         "id": 3,
+        "name": "flag{sql_injection_login_bypass}"
+    },
+    {
+        "id": 4,
         "name": "flag{client_side_order_manipulation}"
+    }, 
+    {
+        "id": 5,
+        "name": "flag{csrf_attack}"
     }
 ]

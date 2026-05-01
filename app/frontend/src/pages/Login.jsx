@@ -33,6 +33,9 @@ const Login = () => {
         {
             navigate("/")
         }
+        
+        setUsername("")
+        setPassword("")
     }
 
     return <div className="page-wrapper">
