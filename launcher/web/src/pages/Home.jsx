@@ -20,7 +20,7 @@ const Home = () => {
             setChamberId(id)
             sessionStorage.setItem("FAST-chamberId", JSON.stringify(id))
 
-            const base = import.meta.env.VITE_CHAMBER_URL || "localhost:3000";
+            const base = "172.25.17.1.nip.io";
             const protocol = "http";
             const url = `${protocol}://${id}.${base}`;
 
@@ -93,6 +93,9 @@ const Home = () => {
                 <NavButton destination="labs" />
                 <NavButton destination="flags" />
             </div>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+            <a className="text-lg hover:underline" href="https://docs.google.com/document/d/16oxm2agTJRfnpVv7td9MXAWT-SdNleTeJaV9JBixY8Q/edit?usp=sharing">Cheat Sheet</a>
         </div>
     </div>
 }

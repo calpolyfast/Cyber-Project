@@ -1,22 +1,26 @@
 [
     {
         "id": 1,
-        "name": "flag{reflected_xss_in_search_parameter}"
+        "name": "Reflected XSS"
     }, 
     {
         "id": 2,
-        "name": "flag{xss_in_product_review}"
+        "name": "Stored XSS"
     },
     {
         "id": 3,
-        "name": "flag{sql_injection_login_bypass}"
+        "name": "SQL Injection"
     },
     {
         "id": 4,
-        "name": "flag{client_side_order_manipulation}"
+        "name": "Business Logic Flag"
     }, 
     {
         "id": 5,
-        "name": "flag{csrf_attack}"
+        "name": "CSRF Flag"
+    },
+    {
+        "id": 6,
+        "name": "IDOR Flag"
     }
 ]

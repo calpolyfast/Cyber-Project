@@ -84,7 +84,7 @@ app.use('/api', extractChamberId)
 app.get('/api/redirect', (req, res) => {
     try {
         const chamberId = req.chamberId
-        const base = process.env.BASE_DOMAIN || "localhost:3000";
+        const base = "172.25.17.1.nip.io";
         const protocol = "http";
         const url = `${protocol}://${chamberId}.${base}`;
         res.redirect(301, url);
@@ -96,11 +96,11 @@ app.get('/api/redirect', (req, res) => {
 app.delete('/api/delete-chamber/', async (req, res) => {
     const id = req.chamberId
 
-    if (!chamberId) {
+    if (!id) {
         return res.sendStatus(400);
     }
 
-    if (chamberId.length < 8) {
+    if (id.length < 8) {
         return res.sendStatus(400);
     }
 

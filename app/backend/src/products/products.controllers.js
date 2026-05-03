@@ -43,7 +43,7 @@ export const getProductBySearchName = async (req, res) => {
     // Manually check if there is a flag
     const xssRegex = /<img[^>]*onerror\s*=\s*['"]?\s*alert\s*\(/i;
     if (xssRegex.test(name)) {
-      return res.status(200).json({ flag: "flag{reflected_xss_in_search_parameter}" })
+      return res.status(200).json({ flag: "flag{xss_in_search_parameter_e52489a9-c8c5-4866-aa65-91147db9db49}" })
     }
     
     try {

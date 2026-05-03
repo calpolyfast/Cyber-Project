@@ -73,7 +73,7 @@ export const createReview = async (req, res) => {
 
         if (hasHTML)
         {
-            fullReview.flag = "flag{xss_in_product_review}"
+            fullReview.flag = "flag{xss_in_product_review_e52489a9-c8c5-4866-aa65-91147db9db49}"
         }
 
         return res.status(201).json(fullReview)

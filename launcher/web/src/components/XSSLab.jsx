@@ -20,7 +20,7 @@ export default function XSSLab() {
             <input type="text" placeholder="Instance ID" onChange={(e) => {setChamberID(e.target.value)}} className="bg-gray-400 p-4 rounded-md" />
             <input type="text" placeholder="Payload" onChange={(e) => {setPayload(e.target.value)}} className="bg-gray-400 p-4 rounded-md" />
             <button name="submit" className="font-bold font-serif p-2 hover:bg-primary bg-[#888] text-black hover:text-white text-xl rounded-sm">Send Payload</button>
-            { resMessage && <p className="h-4 m-2 text-2xl">{resMessage} </p> }
+            { resMessage && <p className="min-h-4 m-2 text-2xl">{resMessage} </p> }
         </form>
     )
 }   

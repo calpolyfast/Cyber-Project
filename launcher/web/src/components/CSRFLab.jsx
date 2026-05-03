@@ -20,7 +20,7 @@ export default function CSRFLab() {
             <input type="text" placeholder="Instance ID" onChange={(e) => {setChamberID(e.target.value)}} className="bg-gray-400 p-4 rounded-md" />
             <textarea type="text" placeholder="Payload" onChange={(e) => {setPayload(e.target.value)}} className="grow bg-gray-400 text-wrap p-4 rounded-md w-full overflow-y-visible h-80" />
             <button name="submit" className="font-bold font-serif p-2 hover:bg-primary bg-[#888] text-black hover:text-white text-xl rounded-sm">Send Payload</button>
-            { resMessage && <p className="h-4 m-2 text-2xl">{resMessage} </p> }
+            { resMessage && <p className="min-h-4 m-2 text-2xl">{resMessage} </p> }
         </form>
     )
 }   

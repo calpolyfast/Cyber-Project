@@ -323,7 +323,7 @@ export const populateOrdersForUser = async (userId) => {
                 connect: { id: order2.id }
             },
             username: user.username,
-            email: user.email || userId > 1 ? "flag" : "default@fastfarmstore.com"
+            email: user.email || userId > 1 ? "flag{invoice_idor_0502efea-58fe-4ffc-8b8b-f239728693a9}" : "default@fastfarmstore.com"
         }
     }
     

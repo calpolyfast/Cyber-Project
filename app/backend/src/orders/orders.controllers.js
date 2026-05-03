@@ -96,7 +96,7 @@ export const createOrderController = async (req, res) => {
         // Add the flag if the total prices don't match
         // Note: Math.round() is used to round both numbers to 2 decimal places
         if (Math.round(totalPrice * 100) / 100 !== Math.round(actualTotalPrice * 100) / 100) {
-            fullOrder["flag"] = "flag{client_side_order_manipulation}"
+            fullOrder["flag"] = "flag{business_logic_1bf5a9da-9ff1-4d54-97fc-d9cddedafdc8}"
         }
 
         return res.status(201).json({

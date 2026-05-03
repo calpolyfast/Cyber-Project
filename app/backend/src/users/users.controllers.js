@@ -82,7 +82,7 @@ export const loginController = async (req, res) => {
 
       // If sqlInjectin was successfully performed, add the flag field
       if (isSqlInjection){
-        resBody["flag"] = "flag{sql_injection_login_bypass}"
+        resBody["flag"] = "flag{sql_injection_login_bypass_e660ad6c-2821-4233-8ac1-ece48925732e}"
       }
       
       res.status(200).json(resBody)
