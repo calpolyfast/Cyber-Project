@@ -27,9 +27,9 @@ const About = () => {
         },
         {
             order: 2,
-            name: "Member3",
-            linkedin: "linkedin.com/in/member3", 
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat, doloribus!"
+            name: "Logan Quon",
+            linkedin: "linkedin.com/in/logan-quon", 
+            description: "First year CS major at Cal Poly Pomona. I helped with some frontend and backend components of this project."
         }
     ]
 
