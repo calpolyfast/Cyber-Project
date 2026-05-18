@@ -6,6 +6,6 @@ export const createChamber = async () => {
 }
 
 export const deleteChamber = async () => {
-    const res = await api.delete(`/delete-chamber/`)
+    const res = await api.delete(`/delete-chamber`)
     return res
 }

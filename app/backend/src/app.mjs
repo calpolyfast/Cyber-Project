@@ -61,7 +61,7 @@ const initialize = async () => {
     generateReviews(id)
   })
 
-  app.listen(port, async () => {
+  app.listen(port, '0.0.0.0', async () => {
       console.log(`Server listening on http://localhost:${port}`);
   });  
 }

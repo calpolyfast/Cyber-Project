@@ -20,7 +20,8 @@ const Home = () => {
             setChamberId(id)
             sessionStorage.setItem("FAST-chamberId", JSON.stringify(id))
 
-            const base = "172.25.17.1.nip.io";
+            let base = import.meta.env.VITE_DEVELOPMENT_URL
+            if (import.meta.env.VITE_NODE_ENV === "production") base = import.meta.env.VITE_PRODUCTION_URL
             const protocol = "http";
             const url = `${protocol}://${id}.${base}`;
 

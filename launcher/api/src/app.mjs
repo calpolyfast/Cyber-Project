@@ -19,6 +19,7 @@ const app = express()
 // IMPORTANT: When running the chamber deployment with kubernetes,
 // the port must be set to 3000 because the chamber.yaml file is configured to forward to port 3000
 const port = process.env.PORT || 3000;
+const launcherUrl = process.env.LAUNCHER_URL || `localhost:${port}`
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors(options))
 app.use(cookieParser())
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 app.get('/api/', (req, res) => {
   res.send('Hello World!')
@@ -84,7 +92,7 @@ app.use('/api', extractChamberId)
 app.get('/api/redirect', (req, res) => {
     try {
         const chamberId = req.chamberId
-        const base = "172.25.17.1.nip.io";
+        const base = launcherUrl;
         const protocol = "http";
         const url = `${protocol}://${chamberId}.${base}`;
         res.redirect(301, url);
@@ -95,6 +103,7 @@ app.get('/api/redirect', (req, res) => {
 
 app.delete('/api/delete-chamber/', async (req, res) => {
     const id = req.chamberId
+    console.log("deleting chamber")
 
     if (!id) {
         return res.sendStatus(400);
@@ -253,19 +262,20 @@ app.post('/api/send-link-payload', async (req, res) => {
 })
 
 app.post('/api/send-html-payload', async (req, res) => {
-    const { instance_id, payload } = req.body
+    const { payload } = req.body
 
-    if (!instance_id || !payload) {
-        return res.sendStatus(400);
+    if (!payload) {
+        return res.status(400).json({ error: "Payload is required" });
     }
-    
-    if (instance_id.length < 8) {
-        return res.sendStatus(400);
-    }
+
+    const chamberId = req.chamberId
+    const base = launcherUrl;
+    const protocol = "http";
+    const url = `${protocol}://${chamberId}.${base}`;
 
     try {
         const podList = await k8sApi.listNamespacedPod({ namespace: "default" });
-        const pod = podList.items.find(p => p.metadata.name.startsWith(`chamber-${instance_id}`));
+        const pod = podList.items.find(p => p.metadata.name.startsWith(`chamber-${chamberId}`));
 
         if (!pod) {
             return res.status(404).send("Pod not found");
@@ -283,7 +293,7 @@ app.post('/api/send-html-payload', async (req, res) => {
                 'default',
                 podName,
                 'browser',
-                ['node', 'htmlpayload.js', payload, 'http://localhost:3000'],
+                ['node', 'htmlpayload.js', payload, url],
                 stdoutStream, // stdout
                 stdoutStream, // stderr (merged for simplicity)
                 null,         // stdin
@@ -304,7 +314,7 @@ app.post('/api/send-html-payload', async (req, res) => {
         console.error("K8s Exec Failure:", err);
         
         if (!res.headersSent) {
-            return res.status(500).json({ error: "Failed to execute payload" });
+            return res.status(500).json({ error: "Failed to execute payload", details: err.res });
         }
     }
 })

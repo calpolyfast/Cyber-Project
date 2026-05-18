@@ -9,10 +9,8 @@ export const sendLinkPayload = (instance_id, payload) => {
     )
 }
 
-export const sendHTMLPayload = (instance_id, payload) => {
+export const sendHTMLPayload = (payload) => {
     return api.post('/send-html-payload', {
-            instance_id: instance_id, 
-            payload: payload
-        }
-    )
+        "payload": payload
+    })
 }
